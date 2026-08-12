@@ -7,7 +7,7 @@ import {
   type FetchBaseQueryMeta,
 } from '@reduxjs/toolkit/query/react'
 import { API_ENDPOINTS, API_URL } from '@/shared/config'
-import { refreshToken } from './auth-thunks'
+import { refreshToken } from '@/entities/user/auth-thunks'
 import type { RootState } from '@/app/providers/store'
 
 const baseQuery = fetchBaseQuery({

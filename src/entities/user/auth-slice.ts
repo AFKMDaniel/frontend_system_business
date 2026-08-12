@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 import type { RootState } from '@/app/providers/store'
-import { login, logout, refreshToken } from '@/shared/api/auth-thunks'
+import { login, logout, refreshToken } from './auth-thunks'
 
 type AuthState = {
   token: string | null

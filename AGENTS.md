@@ -38,7 +38,7 @@ Common needs for this app: `input`, `label`, `card`, `badge`, `select`, `dialog`
 
 Directories under `src/` (some still scaffolding):
 
-- `app/` — app initialization: providers, router
+- `app/` — app initialization: providers (store, root API, base query), router
 - `pages/` — page compositions (login, dashboard, team, task, meeting, calendar)
 - `widgets/` — composite UI blocks (sidebar, header, task-list, calendar-view)
 - `features/` — user scenarios (auth/login, create-task, join-team, comment-form, meeting-form)
@@ -54,10 +54,10 @@ Directories under `src/` (some still scaffolding):
 ## State management
 
 - **Redux Toolkit + RTK Query** is the single data-fetching/state layer (no custom fetch client).
-- Root API: `shared/api/root-api.ts` (`createApi`, empty endpoints for now). Auth/reauth logic (401 → refresh → retry) lives in `shared/api/base-query.ts`. Access token lives only in Redux memory (`features/auth/auth-slice.ts`, no localStorage persistence) — a page reload logs the user out.
-- Per-entity endpoint slices are added with `rootApi.injectEndpoints(...)` under `entities/<domain>/api.ts`, with `tagTypes: ['User','Team','Task','Meeting','Comment']` for cross-entity cache invalidation.
+- Root API: `app/providers/root-api.ts` (`createApi`, empty endpoints for now). Reauth (401 → refresh → retry) lives in `app/providers/base-query.ts`, which dispatches the `refreshToken` thunk on 401. Access token lives only in Redux memory (`entities/user/auth-slice.ts`, no localStorage persistence) — a page reload logs the user out.
+- Per-entity endpoint slices are added with `rootApi.injectEndpoints(...)` under `entities/<domain>/api.ts` (importing `rootApi` from `@/app/providers/root-api`), with `tagTypes: ['User','Team','Task','Meeting','Comment']` for cross-entity cache invalidation. Auth thunks (`login`, `refreshToken`, `logout`) live in `entities/user/auth-thunks.ts`.
 - Store + typed hooks (`useAppDispatch`/`useAppSelector`) live in `app/providers/store.ts`; the Redux Provider wrapper is `app/providers/index.tsx`.
-- Layering: lower layers (features/widgets/pages/entities) may import the store (documented FSD exception); `shared/` must not import from `app/`.
+- Layering: lower layers (features/widgets/pages/entities) may import the store and root API (`app/providers/store.ts`, `app/providers/root-api.ts`) (documented FSD exception); `shared/` must not import from `app/`.
 
 ## Conventions
 
@@ -67,6 +67,6 @@ Directories under `src/` (some still scaffolding):
 - Icons: `lucide-react` only.
 - Styling: Tailwind utility classes; theme tokens (bg-primary, text-muted-foreground, border, ring) come from CSS variables in `src/index.css` — prefer tokens over raw colors.
 - TypeScript: `verbatimModuleSyntax` is on — use `import type { ... }` for type-only imports. No unused locals/parameters allowed.
-- API access goes through per-entity clients under `entities/<domain>/` (e.g. `entities/task/api.ts`) built on the shared fetch client.
+- API access goes through per-entity clients under `entities/<domain>/` (e.g. `entities/task/api.ts`) built on `rootApi` from `@/app/providers/root-api`.
 - Path alias (`@/*`) is required for imports within `src/`.
 - The API base URL is configured via `VITE_API_URL` env var.

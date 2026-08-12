@@ -2,7 +2,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit'
 
 import type { RootState } from '@/app/providers/store'
 import { API_ENDPOINTS, API_URL } from '@/shared/config'
-import { fetchWithAuth } from './fetch-with-auth'
+import { fetchWithAuth } from '@/shared/api/fetch-with-auth'
 
 export const login = createAsyncThunk<
   string,
