@@ -1,19 +1,21 @@
 import {
   fetchBaseQuery,
+  type BaseQueryApi,
   type BaseQueryFn,
   type FetchArgs,
   type FetchBaseQueryError,
   type FetchBaseQueryMeta,
 } from '@reduxjs/toolkit/query/react'
-import { API_URL } from '@/shared/config'
-import { clearStoredTokens, getStoredTokens, setStoredTokens } from '@/shared/lib/tokens'
+import { API_ENDPOINTS, API_URL } from '@/shared/config'
+import { refreshToken } from './auth-thunks'
+import type { RootState } from '@/app/providers/store'
 
 const baseQuery = fetchBaseQuery({
   baseUrl: API_URL,
-  prepareHeaders: (headers) => {
-    const tokens = getStoredTokens()
-    if (tokens) {
-      headers.set('Authorization', `Bearer ${tokens.accessToken}`)
+  prepareHeaders: (headers, { getState }) => {
+    const token = (getState() as RootState).auth?.token
+    if (token) {
+      headers.set('Authorization', `Bearer ${token}`)
     }
     return headers
   },
@@ -21,23 +23,9 @@ const baseQuery = fetchBaseQuery({
 
 let refreshPromise: Promise<boolean> | null = null
 
-async function refreshTokens(): Promise<boolean> {
-  const tokens = getStoredTokens()
-  if (!tokens?.refreshToken) return false
-
+async function refreshTokens(dispatch: BaseQueryApi['dispatch']): Promise<boolean> {
   try {
-    const response = await fetch(`${API_URL}/auth/refresh`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ refreshToken: tokens.refreshToken }),
-    })
-    if (!response.ok) return false
-
-    const data = (await response.json()) as {
-      accessToken: string
-      refreshToken: string
-    }
-    setStoredTokens(data)
+    await dispatch(refreshToken()).unwrap()
     return true
   } catch {
     return false
@@ -51,11 +39,12 @@ export const baseQueryWithReauth: BaseQueryFn<
   object,
   FetchBaseQueryMeta
 > = async (args, api, extraOptions) => {
+  const url = typeof args === 'string' ? args : args.url
   let result = await baseQuery(args, api, extraOptions)
 
-  if (result.error?.status === 401) {
+  if (result.error?.status === 401 && url !== API_ENDPOINTS.auth.refresh) {
     if (!refreshPromise) {
-      refreshPromise = refreshTokens().finally(() => {
+      refreshPromise = refreshTokens(api.dispatch).finally(() => {
         refreshPromise = null
       })
     }
@@ -63,8 +52,6 @@ export const baseQueryWithReauth: BaseQueryFn<
     const refreshed = await refreshPromise
     if (refreshed) {
       result = await baseQuery(args, api, extraOptions)
-    } else {
-      clearStoredTokens()
     }
   }
 

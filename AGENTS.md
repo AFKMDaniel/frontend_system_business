@@ -54,7 +54,7 @@ Directories under `src/` (some still scaffolding):
 ## State management
 
 - **Redux Toolkit + RTK Query** is the single data-fetching/state layer (no custom fetch client).
-- Root API: `shared/api/root-api.ts` (`createApi`, empty endpoints for now). Auth/reauth logic (401 → refresh → retry) lives in `shared/api/base-query.ts`; tokens are persisted to localStorage via `shared/lib/tokens.ts`.
+- Root API: `shared/api/root-api.ts` (`createApi`, empty endpoints for now). Auth/reauth logic (401 → refresh → retry) lives in `shared/api/base-query.ts`. Access token lives only in Redux memory (`features/auth/auth-slice.ts`, no localStorage persistence) — a page reload logs the user out.
 - Per-entity endpoint slices are added with `rootApi.injectEndpoints(...)` under `entities/<domain>/api.ts`, with `tagTypes: ['User','Team','Task','Meeting','Comment']` for cross-entity cache invalidation.
 - Store + typed hooks (`useAppDispatch`/`useAppSelector`) live in `app/providers/store.ts`; the Redux Provider wrapper is `app/providers/index.tsx`.
 - Layering: lower layers (features/widgets/pages/entities) may import the store (documented FSD exception); `shared/` must not import from `app/`.

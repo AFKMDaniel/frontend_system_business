@@ -1,11 +1,14 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { setupListeners } from '@reduxjs/toolkit/query/react'
 import { useDispatch, useSelector, type TypedUseSelectorHook } from 'react-redux'
+import '@/entities'
+import authReducer from '@/features/auth/auth-slice'
 import { rootApi } from '@/shared/api'
 
 export const store = configureStore({
   reducer: {
     [rootApi.reducerPath]: rootApi.reducer,
+    auth: authReducer,
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(rootApi.middleware),
 })
