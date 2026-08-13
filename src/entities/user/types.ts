@@ -28,11 +28,6 @@ export interface LoginUserScheme {
   teams: TeamMemberSchema[]
 }
 
-export interface CreateUserScheme {
-  email: string
-  password: string
-}
-
 export interface OutCreateUserScheme {
   id: number
   email: string

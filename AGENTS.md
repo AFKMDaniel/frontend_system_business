@@ -69,4 +69,3 @@ Directories under `src/` (some still scaffolding):
 - TypeScript: `verbatimModuleSyntax` is on — use `import type { ... }` for type-only imports. No unused locals/parameters allowed.
 - API access goes through per-entity clients under `entities/<domain>/` (e.g. `entities/task/api.ts`) built on `rootApi` from `@/app/providers/root-api`.
 - Path alias (`@/*`) is required for imports within `src/`.
-- The API base URL is configured via `VITE_API_URL` env var.

@@ -3,11 +3,11 @@ import {
   type BaseQueryApi,
   type BaseQueryFn,
   type FetchArgs,
-  type FetchBaseQueryError,
   type FetchBaseQueryMeta,
 } from '@reduxjs/toolkit/query/react'
 import { API_ENDPOINTS, API_URL } from '@/shared/config'
 import { refreshToken } from '@/entities/user/auth-thunks'
+import { normalizeApiError, type ApiError } from '@/shared/api/error'
 import type { RootState } from '@/app/providers/store'
 
 const baseQuery = fetchBaseQuery({
@@ -35,24 +35,36 @@ async function refreshTokens(dispatch: BaseQueryApi['dispatch']): Promise<boolea
 export const baseQueryWithReauth: BaseQueryFn<
   string | FetchArgs,
   unknown,
-  FetchBaseQueryError,
+  ApiError,
   object,
   FetchBaseQueryMeta
 > = async (args, api, extraOptions) => {
   const url = typeof args === 'string' ? args : args.url
-  let result = await baseQuery(args, api, extraOptions)
+  const result = await baseQuery(args, api, extraOptions)
 
-  if (result.error?.status === 401 && url !== API_ENDPOINTS.auth.refresh) {
-    if (!refreshPromise) {
-      refreshPromise = refreshTokens(api.dispatch).finally(() => {
-        refreshPromise = null
-      })
+  if (result.error) {
+    const error = normalizeApiError(result.error)
+
+    if (
+      (error.kind === 'http' || error.kind === 'validation') &&
+      error.status === 401 &&
+      url !== API_ENDPOINTS.auth.refresh
+    ) {
+      if (!refreshPromise) {
+        refreshPromise = refreshTokens(api.dispatch).finally(() => {
+          refreshPromise = null
+        })
+      }
+
+      const refreshed = await refreshPromise
+      if (refreshed) {
+        const retry = await baseQuery(args, api, extraOptions)
+        if (retry.error) return { error: normalizeApiError(retry.error) }
+        return retry
+      }
     }
 
-    const refreshed = await refreshPromise
-    if (refreshed) {
-      result = await baseQuery(args, api, extraOptions)
-    }
+    return { error }
   }
 
   return result
