@@ -23,7 +23,6 @@ export function JoinTeamDialog() {
   const {
     control,
     handleSubmit,
-    reset,
     formState: { errors },
   } = useFormWithErrorHandling<JoinTeamFormValues>({
     resolver: yupResolver(joinTeamSchema),
@@ -33,8 +32,6 @@ export function JoinTeamDialog() {
 
   const onSubmit = handleSubmit(async ({ inviteCode }) => {
     await joinTeam({ inviteCode }).unwrap()
-    dispatch(userApi.util.invalidateTags(['User']))
-    reset()
     dispatch(closeDialog())
   })
 

@@ -23,7 +23,7 @@ export const userApi = rootApi.injectEndpoints({
         method: 'POST',
         params: { invite_code: inviteCode },
       }),
-      invalidatesTags: ['Team'],
+      invalidatesTags: ['Team', 'User'],
     }),
     logout: builder.mutation<void, void>({
       query: () => ({ url: API_ENDPOINTS.auth.logout, method: 'POST' }),
