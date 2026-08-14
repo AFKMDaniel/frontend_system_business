@@ -38,8 +38,8 @@ Common needs for this app: `input`, `label`, `card`, `badge`, `select`, `dialog`
 
 Directories under `src/` (some still scaffolding):
 
-- `app/` — app initialization: providers (store, root API, base query), router
-- `pages/` — page compositions (login, dashboard, team, task, meeting, calendar)
+- `app/` — app initialization and composition root: providers (store, root API, base query), dialog model + host + registry, router
+- `pages/` — page compositions (login, teams, task, meeting, calendar)
 - `widgets/` — composite UI blocks (sidebar, header, task-list, calendar-view)
 - `features/` — user scenarios (auth/login, create-task, join-team, comment-form, meeting-form)
 - `entities/` — domain models + API clients (user, team, task, meeting, comment)
@@ -49,15 +49,21 @@ Directories under `src/` (some still scaffolding):
 
 - Code may import from its own layer and any layer below it; never import upwards (`entities` → `shared` is fine, `shared` → `features` is not).
 - `entities/*` must not import `widgets/features/pages`.
-- `shared` must not import anything from other FSD layers.
+- `shared` must not import anything from other FSD layers, except the store for typed state/selectors (documented exception — see State management).
 
 ## State management
 
 - **Redux Toolkit + RTK Query** is the single data-fetching/state layer (no custom fetch client).
 - Root API: `app/providers/root-api.ts` (`createApi`, empty endpoints for now). Reauth (401 → refresh → retry) lives in `app/providers/base-query.ts`, which dispatches the `refreshToken` thunk on 401. Access token lives only in Redux memory (`entities/user/auth-slice.ts`, no localStorage persistence) — a page reload logs the user out.
-- Per-entity endpoint slices are added with `rootApi.injectEndpoints(...)` under `entities/<domain>/api.ts` (importing `rootApi` from `@/app/providers/root-api`), with `tagTypes: ['User','Team','Task','Meeting','Comment']` for cross-entity cache invalidation. Auth thunks (`login`, `refreshToken`, `logout`) live in `entities/user/auth-thunks.ts`.
+- Per-entity endpoint slices are added with `rootApi.injectEndpoints(...)` under `entities/<domain>/api.ts` (importing `rootApi` from `@/app/providers/root-api`), with `tagTypes: ['User','Team','Task','Meeting','Comment']` for cross-entity cache invalidation. Auth thunks (`login`, `register`, `refreshToken`) live in `entities/user/auth-thunks.ts`; `logout` is an RTK Query mutation on `userApi` (`userApi.useLogoutMutation`), and its fulfilled matcher clears the access token in `auth-slice.ts`.
 - Store + typed hooks (`useAppDispatch`/`useAppSelector`) live in `app/providers/store.ts`; the Redux Provider wrapper is `app/providers/index.tsx`.
-- Layering: lower layers (features/widgets/pages/entities) may import the store and root API (`app/providers/store.ts`, `app/providers/root-api.ts`) (documented FSD exception); `shared/` must not import from `app/`.
+- Layering: lower layers (features/widgets/pages/entities) may import the store and root API (`app/providers/store.ts`, `app/providers/root-api.ts`) (documented FSD exception). `shared/` may also import the store (`@/app/providers/store`) for typed state and selector types — but must not import from any other part of `app/`.
+
+## Dialogs
+
+- The dialog system lives in `app/dialog/` (composition root, imports allowed in every layer via the store/root-api exception): `types.ts` (IDs + `DialogPropsMap`/`DialogPayload` + `DialogRegistry` mapped type), `slice.ts` (Redux slice + selectors; the only `app/dialog` file imported by the store), `model.ts` (`{ id: component }` registry map — pulls in feature components, so it must never be imported by the store), `ui/DialogHost/index.tsx` (mounted in `app/providers/index.tsx`).
+- Dialog props types are owned by the feature that renders the dialog (e.g. `JoinTeamDialogProps` in `features/team/join-team/types.ts`) and referenced from `app/dialog/types.ts` via type-only imports.
+- Open a dialog with `dispatch(openDialog({ id: DIALOG_IDS.joinTeam }))`; props are type-checked per dialog ID. Features/widgets/pages import from `@/app/dialog` (contract + slice); `@/app/dialog/ui/DialogHost` is internal to the host.
 
 ## Conventions
 

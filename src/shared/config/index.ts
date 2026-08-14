@@ -1,9 +1,3 @@
 export { API_ENDPOINTS } from './api-endpoints'
 
 export const API_URL = '/api'
-
-export const TASK_STATUSES = ['open', 'work', 'closed'] as const
-export type TaskStatus = (typeof TASK_STATUSES)[number]
-
-export const TEAM_ROLES = ['owner', 'manager', 'employee'] as const
-export type TeamRole = (typeof TEAM_ROLES)[number]

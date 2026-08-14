@@ -1,19 +1,18 @@
 import { createBrowserRouter, Navigate, Outlet } from 'react-router-dom'
 
-import { AuthProvider } from '@/app/providers/auth-provider'
-import { DashboardPage } from '@/pages/dashboard'
+import { Providers } from '@/app/providers'
 import { ForbiddenPage } from '@/pages/forbidden'
 import { LoginPage } from '@/pages/login'
 import { RegisterPage } from '@/pages/register'
+import { HomePage } from '@/pages/home'
 import { AuthGuard, GuestGuard } from './guards'
 
 export const router = createBrowserRouter([
   {
     element: (
-      <>
-        <AuthProvider />
+      <Providers>
         <Outlet />
-      </>
+      </Providers>
     ),
     children: [
       {
@@ -36,7 +35,7 @@ export const router = createBrowserRouter([
         path: '/',
         element: (
           <AuthGuard>
-            <DashboardPage />
+            <HomePage />
           </AuthGuard>
         ),
       },

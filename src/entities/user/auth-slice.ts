@@ -1,7 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 import type { RootState } from '@/app/providers/store'
-import { login, logout, refreshToken } from './auth-thunks'
+import { userApi } from './api'
+import { login, refreshToken } from './auth-thunks'
 
 type AuthStatus = 'idle' | 'refreshing' | 'ready'
 
@@ -36,7 +37,7 @@ const authSlice = createSlice({
         state.token = null
         state.status = 'ready'
       })
-      .addCase(logout.fulfilled, (state) => {
+      .addMatcher(userApi.endpoints.logout.matchFulfilled, (state) => {
         state.token = null
       })
   },

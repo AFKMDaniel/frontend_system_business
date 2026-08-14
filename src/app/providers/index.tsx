@@ -1,7 +1,17 @@
 import type { PropsWithChildren } from 'react'
 import { Provider } from 'react-redux'
+
+import { DialogHost } from '@/app/dialog/ui/DialogHost'
+
+import { AuthProvider } from './auth-provider'
 import { store } from './store'
 
 export function Providers({ children }: PropsWithChildren) {
-  return <Provider store={store}>{children}</Provider>
+  return (
+    <Provider store={store}>
+      <AuthProvider />
+      {children}
+      <DialogHost />
+    </Provider>
+  )
 }

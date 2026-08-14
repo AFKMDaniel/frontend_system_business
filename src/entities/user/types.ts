@@ -1,5 +1,11 @@
 export type AccessToken = string
 
+export interface AuthTokenResponse {
+  access_token: string
+  token_type: string
+  message?: string
+}
+
 export interface RoleSchema {
   name: string
 }
