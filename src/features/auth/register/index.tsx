@@ -8,6 +8,7 @@ import { register } from '@/entities/user/auth-thunks'
 import { useFormWithErrorHandling } from '@/shared/lib/use-form-with-error-handling'
 import { FormInput } from '@/shared/ui/form-input'
 import { Button } from '@/shared/ui/button'
+import { ROUTES } from '@/shared/config'
 import {
   Card,
   CardContent,
@@ -53,7 +54,7 @@ export function RegisterForm() {
 
   const onSubmit = handleSubmit(async ({ email, password }) => {
     await dispatch(register({ email, password })).unwrap()
-    navigate('/login')
+    navigate(ROUTES.login)
   })
 
   return (

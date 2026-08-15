@@ -14,25 +14,10 @@ Frontend for a business-management system (teams, tasks, meetings, calendar, com
 ## Commands
 
 - `npm run dev` — start Vite dev server
-- `npm run build` — type-check (`tsc -b`) then production build (this is the verify command)
+- `npm run build` — type-check (`tsc -b`) then production build
+- `npx tsc -b` — type-check only (this is the verify command)
 - `npm run lint` — run oxlint
 - `npm run preview` — preview production build
-- `npx shadcn@latest add <component>` — add a new shadcn/ui component (installs into `src/shared/ui`)
-
-### Add shadcn/ui components
-
-To bring in a new UI component from the shadcn library:
-
-```
-npx shadcn@latest add button
-```
-
-- The component is installed as **owned source** (editable) into `src/shared/ui/<name>.tsx` — not a runtime dependency, so you can modify it.
-- New components are registered in `components.json` aliases and auto-install their deps (radix-ui primitives, lucide icons, etc.).
-- After adding, re-run `npm run build` to verify the new component compiles.
-- Import it via the `@/shared/ui` path, e.g. `import { Button } from "@/shared/ui/button"`.
-
-Common needs for this app: `input`, `label`, `card`, `badge`, `select`, `dialog`, `dropdown-menu`, `avatar`, `table`, `textarea`, `separator`, `tabs`, `toast`, `tooltip`, `skeleton`.
 
 ## Architecture (FSD layers)
 
@@ -43,7 +28,7 @@ Directories under `src/` (some still scaffolding):
 - `widgets/` — composite UI blocks (sidebar, header, task-list, calendar-view)
 - `features/` — user scenarios (auth/login, create-task, join-team, comment-form, meeting-form)
 - `entities/` — domain models + API clients (user, team, task, meeting, comment)
-- `shared/` — reuse across layers: `api/` (fetch client), `config/`, `lib/` (utils), `types/`, `ui/` (shadcn components)
+- `shared/` — reuse across layers: `api/` (fetch client), `config/`, `lib/` (utils), `types/`, `ui/`
 
 ### Layering rules
 
@@ -61,15 +46,16 @@ Directories under `src/` (some still scaffolding):
 
 ## Dialogs
 
-- The dialog system lives in `app/dialog/` (composition root, imports allowed in every layer via the store/root-api exception): `types.ts` (IDs + `DialogPropsMap`/`DialogPayload` + `DialogRegistry` mapped type), `slice.ts` (Redux slice + selectors; the only `app/dialog` file imported by the store), `model.ts` (`{ id: component }` registry map — pulls in feature components, so it must never be imported by the store), `ui/DialogHost/index.tsx` (mounted in `app/providers/index.tsx`).
+- The dialog system lives in `app/dialog/` (composition root, imports allowed in every layer via the store/root-api exception): `types.ts` (IDs + `DialogPropsMap`/`DialogPayload` + `DialogRegistry` mapped type), `slice.ts` (Redux slice + selectors; the only `app/dialog` file imported by the store), `model.ts` (`{ id: component }` registry map — pulls in feature components, so it must never be imported by the store), `ui/dialog-host.tsx` (mounted in `app/providers/index.tsx`).
 - Dialog props types are owned by the feature that renders the dialog (e.g. `JoinTeamDialogProps` in `features/team/join-team/types.ts`) and referenced from `app/dialog/types.ts` via type-only imports.
-- Open a dialog with `dispatch(openDialog({ id: DIALOG_IDS.joinTeam }))`; props are type-checked per dialog ID. Features/widgets/pages import from `@/app/dialog` (contract + slice); `@/app/dialog/ui/DialogHost` is internal to the host.
+- Open a dialog with `dispatch(openDialog({ id: DIALOG_IDS.joinTeam }))`; props are type-checked per dialog ID. Features/widgets/pages import from `@/app/dialog` (contract + slice); `@/app/dialog/ui/dialog-host` is internal to the host.
 
 ## Conventions
 
+- File names and the components they export must match: a component file's name (kebab-case) must correspond to its main exported component (PascalCase), e.g. `task-list-body.tsx` exports `TaskListBody`. `index.tsx` is reserved as a folder entry/barrel (public API), not a component file.
 - Import alias: `@/*` → `./src/*` (configured in `tsconfig.app.json` + `vite.config.ts`).
-- shadcn components use `cn()` from `@/shared/lib/utils` for class merging — use it for any component that merges Tailwind classes.
-- Use existing shadcn components from `@/shared/ui` before writing raw DOM/Tailwind.
+- Components in `src/shared/ui` use `cn()` from `@/shared/lib/utils` for class merging — use it for any component that merges Tailwind classes.
+- Use existing components from `@/shared/ui` before writing raw DOM/Tailwind.
 - Icons: `lucide-react` only.
 - Styling: Tailwind utility classes; theme tokens (bg-primary, text-muted-foreground, border, ring) come from CSS variables in `src/index.css` — prefer tokens over raw colors.
 - TypeScript: `verbatimModuleSyntax` is on — use `import type { ... }` for type-only imports. No unused locals/parameters allowed.

@@ -26,12 +26,10 @@ export const API_ENDPOINTS = {
     task: (teamId: number, taskId: number) => `/teams/${teamId}/tasks/${taskId}`,
     taskAvgGrade: (teamId: number) => `/teams/${teamId}/tasks/avg_grade`,
     taskCreate: (teamId: number) => `/teams/${teamId}/tasks/create-task`,
-    taskUpdate: (teamId: number, taskId: number) =>
-      `/teams/${teamId}/tasks/update-task/${taskId}`,
+    taskUpdate: (teamId: number, taskId: number) => `/teams/${teamId}/tasks/update-task/${taskId}`,
     taskUpdateStatus: (teamId: number, taskId: number) =>
       `/teams/${teamId}/tasks/update-task/${taskId}/status`,
-    taskDelete: (teamId: number, taskId: number) =>
-      `/teams/${teamId}/tasks/delete-task/${taskId}`,
+    taskDelete: (teamId: number, taskId: number) => `/teams/${teamId}/tasks/delete-task/${taskId}`,
   },
   comments: {
     list: (teamId: number, taskId: number) => `/teams/${teamId}/tasks/${taskId}/comments`,

@@ -1,6 +1,6 @@
 import type { PropsWithChildren } from 'react'
 
-import { Header, type HeaderTab } from '@/widgets/header'
+import { Header, type HeaderTab } from '@/shared/ui/header'
 
 type LayoutProps = PropsWithChildren<{
   title: string

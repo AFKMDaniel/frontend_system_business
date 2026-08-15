@@ -1,10 +1,16 @@
 import { createBrowserRouter, Navigate, Outlet } from 'react-router-dom'
 
 import { Providers } from '@/app/providers'
+import { ROUTES } from '@/shared/config'
 import { ForbiddenPage } from '@/pages/forbidden'
 import { LoginPage } from '@/pages/login'
 import { RegisterPage } from '@/pages/register'
 import { HomePage } from '@/pages/home'
+import { TeamMembersPage } from '@/pages/team/members'
+import { TeamMeetingsPage } from '@/pages/team/meetings'
+import { TeamTasksPage } from '@/pages/team/tasks'
+import { TeamLayout } from '@/widgets/team-layout'
+import { HomeLayout } from '@/widgets/home-layout'
 import { AuthGuard, GuestGuard } from './guards'
 
 export const router = createBrowserRouter([
@@ -16,7 +22,7 @@ export const router = createBrowserRouter([
     ),
     children: [
       {
-        path: '/login',
+        path: ROUTES.login,
         element: (
           <GuestGuard>
             <LoginPage />
@@ -24,7 +30,7 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: '/register',
+        path: ROUTES.register,
         element: (
           <GuestGuard>
             <RegisterPage />
@@ -32,20 +38,34 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: '/',
+        path: ROUTES.home,
         element: (
           <AuthGuard>
-            <HomePage />
+            <HomeLayout />
           </AuthGuard>
         ),
+        children: [{ index: true, element: <HomePage /> }],
       },
       {
-        path: '/forbidden',
+        path: ROUTES.team,
+        element: (
+          <AuthGuard>
+            <TeamLayout />
+          </AuthGuard>
+        ),
+        children: [
+          { index: true, element: <TeamTasksPage /> },
+          { path: ROUTES.teamMembers, element: <TeamMembersPage /> },
+          { path: ROUTES.teamMeetings, element: <TeamMeetingsPage /> },
+        ],
+      },
+      {
+        path: ROUTES.forbidden,
         element: <ForbiddenPage />,
       },
       {
         path: '*',
-        element: <Navigate to="/" replace />,
+        element: <Navigate to={ROUTES.home} replace />,
       },
     ],
   },

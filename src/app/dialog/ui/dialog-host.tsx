@@ -4,14 +4,14 @@ import type { AnimationEvent, ReactNode } from 'react'
 import { useAppDispatch, useAppSelector } from '@/app/providers/store'
 import { Dialog, DialogContent } from '@/shared/ui/dialog'
 
-import type { DialogId, DialogPropsMap } from '../../types'
+import { dialogRegistry } from '../model'
 import {
   clearDialogContent,
   closeDialog,
   selectDialogContent,
   selectDialogIsOpen,
-} from '../../slice'
-import { dialogRegistry } from '../../model'
+} from '../slice'
+import type { DialogId, DialogPropsMap } from '../types'
 
 function renderDialog<K extends DialogId>(id: K, props?: DialogPropsMap[K]): ReactNode {
   const Content = dialogRegistry[id]

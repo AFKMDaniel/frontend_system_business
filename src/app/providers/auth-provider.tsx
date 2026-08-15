@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '@/app/providers/store'
 import { refreshToken } from '@/entities/user/auth-thunks'
 import { selectAccessToken, selectAuthStatus } from '@/entities/user/auth-slice'
+import { ROUTES } from '@/shared/config'
 
 export function AuthProvider() {
   const token = useAppSelector(selectAccessToken)
@@ -19,7 +20,7 @@ export function AuthProvider() {
 
   useEffect(() => {
     if (status === 'ready' && !token) {
-      navigate('/login', { replace: true })
+      navigate(ROUTES.login, { replace: true })
     }
   }, [status, token, navigate])
 

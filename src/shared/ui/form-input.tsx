@@ -6,8 +6,12 @@ import {
   type FieldValues,
 } from 'react-hook-form'
 
+import {
+  Field,
+  FieldError,
+  FieldLabel,
+} from '@/shared/ui/field'
 import { Input } from '@/shared/ui/input'
-import { Label } from '@/shared/ui/label'
 
 interface FormInputProps<
   TFieldValues extends FieldValues,
@@ -30,18 +34,16 @@ function FormInput<
   const { field, fieldState } = useController({ control, name })
 
   return (
-    <div className="flex flex-col gap-1.5">
-      <Label htmlFor={name}>{label}</Label>
+    <Field data-invalid={fieldState.invalid}>
+      <FieldLabel htmlFor={name}>{label}</FieldLabel>
       <Input
         id={name}
         aria-invalid={fieldState.invalid}
         {...inputProps}
         {...field}
       />
-      {fieldState.error ? (
-        <p className="text-sm text-destructive">{fieldState.error.message}</p>
-      ) : null}
-    </div>
+      <FieldError errors={fieldState.error ? [fieldState.error] : []} />
+    </Field>
   )
 }
 

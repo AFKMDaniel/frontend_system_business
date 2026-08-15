@@ -6,6 +6,7 @@ import { Loader2 } from 'lucide-react'
 import { useAppSelector } from '@/app/providers/store'
 import { userApi } from '@/entities/user/api'
 import { selectAccessToken, selectAuthReady } from '@/entities/user/auth-slice'
+import { ROUTES } from '@/shared/config'
 
 type GuardProps = {
   children: ReactNode
@@ -25,7 +26,7 @@ function RouteLoader() {
   )
 }
 
-export function GuestGuard({ children, redirectTo = '/' }: GuardProps) {
+export function GuestGuard({ children, redirectTo = ROUTES.home }: GuardProps) {
   const token = useAppSelector(selectAccessToken)
   const isReady = useAppSelector(selectAuthReady)
 
@@ -43,8 +44,8 @@ export function GuestGuard({ children, redirectTo = '/' }: GuardProps) {
 export function AuthGuard({
   children,
   roles = [],
-  redirectTo = '/login',
-  forbiddenPath = '/forbidden',
+  redirectTo = ROUTES.login,
+  forbiddenPath = ROUTES.forbidden,
 }: AuthGuardProps) {
   const token = useAppSelector(selectAccessToken)
   const isReady = useAppSelector(selectAuthReady)

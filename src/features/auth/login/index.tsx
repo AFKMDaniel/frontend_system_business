@@ -7,6 +7,7 @@ import { login } from '@/entities/user/auth-thunks'
 import { useFormWithErrorHandling } from '@/shared/lib/use-form-with-error-handling'
 import { FormInput } from '@/shared/ui/form-input'
 import { Button } from '@/shared/ui/button'
+import { ROUTES } from '@/shared/config'
 import {
   Card,
   CardContent,
@@ -38,7 +39,7 @@ export function LoginForm() {
 
   const onSubmit = handleSubmit(async ({ username, password }) => {
     await dispatch(login({ username, password })).unwrap()
-    navigate('/')
+    navigate(ROUTES.home)
   })
 
   return (
@@ -71,7 +72,7 @@ export function LoginForm() {
           {isSubmitting ? 'Signing in…' : 'Sign in'}
         </Button>
         <Button asChild variant="outline" className="w-full">
-          <Link to="/register">Create account</Link>
+          <Link to={ROUTES.register}>Create account</Link>
         </Button>
       </CardFooter>
     </Card>
