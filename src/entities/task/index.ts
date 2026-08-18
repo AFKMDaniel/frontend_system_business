@@ -1,2 +1,5 @@
 export * from './types'
 export * from './api'
+export { TaskCard } from './ui/task-card'
+export * from './lib/status'
+export * from './lib/task-adapter'

@@ -45,7 +45,7 @@ export function Header({ title, tabs }: HeaderProps) {
               <Button variant="ghost" size="icon" className="rounded-full">
                 <Avatar>
                   <AvatarFallback>
-                    <User className="size-4" />
+                    {user?.email ? user.email.charAt(0).toUpperCase() : <User className="size-4" />}
                   </AvatarFallback>
                 </Avatar>
               </Button>

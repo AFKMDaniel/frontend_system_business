@@ -1,4 +1,4 @@
-export type StatusTask = 'open' | 'work' | 'closed'
+import type { StatusTask } from './lib/status'
 
 export type GradeTask = 1 | 2 | 3 | 4 | 5
 

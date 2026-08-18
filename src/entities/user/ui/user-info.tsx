@@ -1,4 +1,4 @@
-import { Loader2, User } from 'lucide-react'
+import { Loader2 } from 'lucide-react'
 
 import { Avatar, AvatarFallback } from '@/shared/ui/avatar'
 
@@ -22,8 +22,8 @@ export function UserInfo() {
   return (
     <div className="flex w-full items-center gap-6 text-left lg:flex-col lg:items-start">
       <Avatar className="aspect-square size-40 lg:size-60">
-        <AvatarFallback className="p-8">
-          <User style={{ width: '100%', height: 'auto' }} />
+        <AvatarFallback className="text-5xl font-semibold lg:text-7xl">
+          {user.email.charAt(0).toUpperCase()}
         </AvatarFallback>
       </Avatar>
       <div className="flex flex-col gap-1.5">

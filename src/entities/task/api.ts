@@ -1,5 +1,9 @@
+import type { EntityState } from '@reduxjs/toolkit'
+
 import { rootApi } from '@/app/providers/root-api'
 import { API_ENDPOINTS } from '@/shared/config'
+
+import { taskAdapter } from './lib/task-adapter'
 
 import type {
   OutAVGGradeTaskSchema,
@@ -12,11 +16,16 @@ import type {
 
 export const taskApi = rootApi.injectEndpoints({
   endpoints: (builder) => ({
-    getTasks: builder.query<TaskSchema[], { teamId: number; params?: TaskListParams }>({
+    getTasks: builder.query<
+      EntityState<TaskSchema, number>,
+      { teamId: number; params?: TaskListParams }
+    >({
       query: ({ teamId, params }) => ({
         url: API_ENDPOINTS.teams.tasks(teamId),
         params,
       }),
+      transformResponse: (response: TaskSchema[]) =>
+        taskAdapter.setAll(taskAdapter.getInitialState(), response),
       providesTags: ['Task'],
     }),
     getTaskById: builder.query<TaskSchema, { teamId: number; taskId: number }>({

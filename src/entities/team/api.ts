@@ -1,5 +1,9 @@
+import type { EntityState } from '@reduxjs/toolkit'
+
 import { rootApi } from '@/app/providers/root-api'
 import { API_ENDPOINTS } from '@/shared/config'
+
+import { teamMemberAdapter } from './lib/member-adapter'
 
 import type {
   AddTeamMemberSchema,
@@ -16,8 +20,16 @@ export const teamApi = rootApi.injectEndpoints({
       query: ({ teamId }) => API_ENDPOINTS.teams.get(teamId),
       providesTags: ['Team'],
     }),
-    getTeamMembers: builder.query<TeamResponseSchema, { teamId: number }>({
+    getTeamMembers: builder.query<
+      EntityState<TeamMemberResponseSchema, number>,
+      { teamId: number }
+    >({
       query: ({ teamId }) => API_ENDPOINTS.teams.members(teamId),
+      transformResponse: (response: TeamResponseSchema) =>
+        teamMemberAdapter.setAll(
+          teamMemberAdapter.getInitialState(),
+          response.members,
+        ),
       providesTags: ['Team'],
     }),
     addTeamMember: builder.mutation<
