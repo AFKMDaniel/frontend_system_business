@@ -87,7 +87,6 @@ export function RegisterForm() {
             type="password"
             autoComplete="new-password"
           />
-          {errors.root ? <p className="text-sm text-destructive">{errors.root.message}</p> : null}
         </form>
       </CardContent>
       <CardFooter>

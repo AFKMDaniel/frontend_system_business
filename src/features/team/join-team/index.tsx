@@ -20,11 +20,7 @@ type JoinTeamFormValues = { inviteCode: string }
 export function JoinTeamDialog() {
   const dispatch = useAppDispatch()
   const [joinTeam, { isLoading }] = userApi.useJoinTeamMutation()
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-  } = useFormWithErrorHandling<JoinTeamFormValues>({
+  const { control, handleSubmit } = useFormWithErrorHandling<JoinTeamFormValues>({
     resolver: yupResolver(joinTeamSchema),
     defaultValues: { inviteCode: '' },
     fallback: 'Failed to join the team',
@@ -51,7 +47,6 @@ export function JoinTeamDialog() {
           placeholder="e.g. ABC123"
           autoFocus
         />
-        {errors.root ? <p className="text-destructive text-sm">{errors.root.message}</p> : null}
       </form>
       <DialogFooter>
         <Button form="join-team-form" type="submit" disabled={isLoading}>

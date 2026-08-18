@@ -18,7 +18,7 @@ import {
 } from '@/shared/ui/card'
 
 const loginSchema = object({
-  username: string().trim().required('Username is required'),
+  username: string().trim().email('Enter a valid email').required('Username is required'),
   password: string().required('Password is required'),
 })
 
@@ -30,7 +30,7 @@ export function LoginForm() {
   const {
     control,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { isSubmitting },
   } = useFormWithErrorHandling<LoginFormValues>({
     resolver: yupResolver(loginSchema),
     defaultValues: { username: '', password: '' },
@@ -53,7 +53,7 @@ export function LoginForm() {
           <FormInput
             control={control}
             name="username"
-            label="Username"
+            label="Email"
             autoComplete="username"
             autoFocus
           />
@@ -64,7 +64,6 @@ export function LoginForm() {
             type="password"
             autoComplete="current-password"
           />
-          {errors.root ? <p className="text-sm text-destructive">{errors.root.message}</p> : null}
         </form>
       </CardContent>
       <CardFooter className="flex-col gap-2">

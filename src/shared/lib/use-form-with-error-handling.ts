@@ -9,6 +9,7 @@ import type {
   UseFormReturn,
   UseFormSetError,
 } from 'react-hook-form'
+import { toast } from 'sonner'
 
 import { isValidationError } from '@/shared/api/error'
 
@@ -60,7 +61,7 @@ export function useFormWithErrorHandling<TFieldValues extends FieldValues, TCont
               setServerError(setError, field, message)
             }
           } else {
-            setError('root', { type: 'manual', message: extractMessage(error, fallback) })
+            toast.error(extractMessage(error, fallback))
           }
         }
       }, onInvalid),
