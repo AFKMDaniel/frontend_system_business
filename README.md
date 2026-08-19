@@ -2,7 +2,7 @@
 
 Frontend for a business-management system (teams, tasks, meetings, calendar, comments), backed by a FastAPI API ([api_system_business](https://github.com/NeroGeer/api_system_business)) with RBAC, JWT auth, and team-membership checks.
 
-Stack: React 19, TypeScript, Vite, Tailwind CSS v4, shadcn/ui (radix-nova), Redux Toolkit + RTK Query, React Router v7, Feature-Sliced Design.
+Stack: React 19, TypeScript, Vite, Tailwind CSS v4, shadcn/ui (radix-nova), Redux Toolkit + RTK Query, React Router v7, i18next (i18n), Feature-Sliced Design.
 
 ## Prerequisites
 
@@ -64,3 +64,7 @@ How it works:
 - `npm run lint` — oxlint
 - `npm run format` / `npm run format:check` — Prettier
 - `npm run preview` — preview the production build (note: `vite preview` does not apply `server.proxy`; it uses its own `preview.*` options)
+
+## Localization
+
+The UI is translated with i18next + react-i18next. Supported languages: **English** (default) and **Russian**.

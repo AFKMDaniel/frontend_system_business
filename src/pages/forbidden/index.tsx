@@ -1,3 +1,6 @@
+import { useTranslation } from '@/shared/i18n'
+
 export function ForbiddenPage() {
-  return <main>Forbidden</main>
+  const { t } = useTranslation()
+  return <main>{t('forbidden.title')}</main>
 }

@@ -8,6 +8,7 @@ import { teamApi } from '@/entities/team'
 import { selectTasksByStatus } from '@/entities/task'
 import { taskApi } from '@/entities/task'
 import { userApi } from '@/entities/user'
+import { useTranslation } from '@/shared/i18n'
 import { Avatar, AvatarFallback } from '@/shared/ui/avatar'
 import { Button } from '@/shared/ui/button'
 import { DatePicker } from '@/shared/ui/date-picker'
@@ -36,6 +37,7 @@ type ExecutorOption = {
 export function TeamTaskBoard() {
   const { teamId } = useParams<'teamId'>()
   const skip = !teamId
+  const { t } = useTranslation()
 
   const [executorId, setExecutorId] = useState<number | null>(null)
   const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined)
@@ -82,14 +84,14 @@ export function TeamTaskBoard() {
 
   const executorOptions = useMemo<ExecutorOption[]>(
     () => [
-      { id: 'all', label: 'All executors' },
+      { id: 'all', label: t('task.board.allExecutors') },
       ...(members ?? []).map((member) => ({
         id: String(member.user.id),
         label: member.user.email,
         userId: member.user.id,
       })),
     ],
-    [members],
+    [members, t],
   )
 
   const selectedExecutor = useMemo(
@@ -107,7 +109,7 @@ export function TeamTaskBoard() {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-wrap items-start gap-4">
-        <FilterGroup label="Assignee">
+        <FilterGroup label={t('task.board.assignee')}>
           <Combobox
             items={executorOptions}
             value={selectedExecutor}
@@ -116,7 +118,7 @@ export function TeamTaskBoard() {
             }
             itemToStringValue={(option) =>
               option.userId != null && option.userId === currentUser?.id
-                ? `${option.label} (me)`
+                ? `${option.label} (${t('task.board.me')})`
                 : option.label
             }
           >
@@ -126,8 +128,8 @@ export function TeamTaskBoard() {
               <ComboboxValue />
             </ComboboxTrigger>
             <ComboboxContent>
-              <ComboboxInput showTrigger={false} placeholder="Search executor" />
-              <ComboboxEmpty>No executors found.</ComboboxEmpty>
+              <ComboboxInput showTrigger={false} placeholder={t('task.board.searchExecutor')} />
+              <ComboboxEmpty>{t('task.board.noExecutors')}</ComboboxEmpty>
               <ComboboxList>
                 {(option) => (
                   <ComboboxItem key={option.id} value={option}>
@@ -139,7 +141,7 @@ export function TeamTaskBoard() {
                     <span className="truncate">
                       {option.label}
                       {option.userId != null && option.userId === currentUser?.id && (
-                        <span className="text-muted-foreground"> (me)</span>
+                        <span className="text-muted-foreground"> ({t('task.board.me')})</span>
                       )}
                     </span>
                   </ComboboxItem>
@@ -149,7 +151,7 @@ export function TeamTaskBoard() {
           </Combobox>
         </FilterGroup>
 
-        <FilterGroup label="Date range">
+        <FilterGroup label={t('task.board.dateRange')}>
           <DatePicker mode="range" value={dateRange} onSelect={setDateRange} />
         </FilterGroup>
       </div>

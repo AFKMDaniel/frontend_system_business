@@ -4,6 +4,8 @@ import { NavLink } from 'react-router-dom'
 import { DIALOG_IDS, openDialog } from '@/app/dialog'
 import { useAppDispatch } from '@/app/providers/store'
 import { userApi } from '@/entities/user'
+import { LanguageMenuItems } from '@/features/language/ui/language-menu-items'
+import { useTranslation } from '@/shared/i18n'
 import { cn } from '@/shared/lib/utils'
 import { Avatar, AvatarFallback } from '@/shared/ui/avatar'
 import { Button } from '@/shared/ui/button'
@@ -29,17 +31,16 @@ type HeaderProps = {
 
 export function Header({ title, tabs }: HeaderProps) {
   const dispatch = useAppDispatch()
+  const { t } = useTranslation()
   const { data: user } = userApi.useGetUserMeQuery()
   const [logout] = userApi.useLogoutMutation()
 
   return (
-    <header className="sticky top-0 z-40 border-b bg-background">
+    <header className="bg-background sticky top-0 z-40 border-b">
       <div className="flex h-14 w-full items-center justify-between px-4 sm:px-6 lg:px-8">
         <span className="text-base font-semibold">{title}</span>
         <div className="flex items-center gap-3">
-          <span className="hidden text-sm text-muted-foreground sm:inline">
-            {user?.email}
-          </span>
+          <span className="text-muted-foreground hidden text-sm sm:inline">{user?.email}</span>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon" className="rounded-full">
@@ -50,16 +51,18 @@ export function Header({ title, tabs }: HeaderProps) {
                 </Avatar>
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
+            <DropdownMenuContent align="end" className="w-fit">
               <DropdownMenuItem onSelect={() => dispatch(openDialog({ id: DIALOG_IDS.joinTeam }))}>
                 <UserPlus />
-                Join team
+                {t('header.joinTeam')}
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem variant="destructive" onSelect={() => void logout()}>
                 <LogOut />
-                Log out
+                {t('header.logOut')}
               </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <LanguageMenuItems />
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
@@ -73,7 +76,7 @@ export function Header({ title, tabs }: HeaderProps) {
               end={tab.end}
               className={({ isActive }) =>
                 cn(
-                  'flex h-9 shrink-0 items-center gap-2 border-b-2 border-transparent px-3 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground',
+                  'text-muted-foreground hover:text-foreground flex h-9 shrink-0 items-center gap-2 border-b-2 border-transparent px-3 text-sm font-medium transition-colors',
                   isActive && 'border-primary text-foreground',
                 )
               }

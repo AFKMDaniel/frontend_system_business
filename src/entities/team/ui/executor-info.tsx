@@ -1,12 +1,8 @@
 import { Loader2 } from 'lucide-react'
 
+import { useTranslation } from '@/shared/i18n'
 import { Avatar, AvatarFallback } from '@/shared/ui/avatar'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/shared/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/shared/ui/tooltip'
 
 import { teamApi } from '../api'
 import { selectMemberByUserId } from '../lib/member-adapter'
@@ -19,15 +15,13 @@ type ExecutorInfoProps = {
 }
 
 export function ExecutorInfo({ teamId, userId }: ExecutorInfoProps) {
+  const { t } = useTranslation()
   const { member, isLoading } = teamApi.useGetTeamMembersQuery(
     { teamId },
     {
       selectFromResult: ({ data, isLoading }) => ({
         isLoading,
-        member:
-          userId != null && data
-            ? selectMemberByUserId(data, userId)
-            : undefined,
+        member: userId != null && data ? selectMemberByUserId(data, userId) : undefined,
       }),
     },
   )
@@ -37,7 +31,7 @@ export function ExecutorInfo({ teamId, userId }: ExecutorInfoProps) {
   }
 
   if (userId == null || !member) {
-    return <span className="text-muted-foreground text-xs">Unassigned</span>
+    return <span className="text-muted-foreground text-xs">{t('executor.unassigned')}</span>
   }
 
   const email = member.user.email

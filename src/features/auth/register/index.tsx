@@ -6,6 +6,7 @@ import { object, ref, string } from 'yup'
 import { useAppDispatch } from '@/app/providers/store'
 import { register } from '@/entities/user/auth-thunks'
 import { useFormWithErrorHandling } from '@/shared/lib/use-form-with-error-handling'
+import { i18n, useTranslation } from '@/shared/i18n'
 import { FormInput } from '@/shared/ui/form-input'
 import { Button } from '@/shared/ui/button'
 import { ROUTES } from '@/shared/config'
@@ -19,11 +20,16 @@ import {
 } from '@/shared/ui/card'
 
 const registerSchema = object({
-  email: string().trim().email('Enter a valid email').required('Email is required'),
-  password: string().min(8, 'Password must be at least 8 characters').required('Password is required'),
+  email: string()
+    .trim()
+    .email(() => i18n.t('auth.register.errors.email'))
+    .required(() => i18n.t('auth.register.errors.emailRequired')),
+  password: string()
+    .min(8, () => i18n.t('auth.register.errors.passwordMin'))
+    .required(() => i18n.t('auth.register.errors.passwordRequired')),
   confirmPassword: string()
-    .oneOf([ref('password')], 'Passwords do not match')
-    .required('Confirm your password'),
+    .oneOf([ref('password')], () => i18n.t('auth.register.errors.passwordMismatch'))
+    .required(() => i18n.t('auth.register.errors.confirmPasswordRequired')),
 })
 
 type RegisterFormValues = {
@@ -35,6 +41,7 @@ type RegisterFormValues = {
 export function RegisterForm() {
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
+  const { t } = useTranslation()
   const {
     control,
     handleSubmit,
@@ -43,7 +50,7 @@ export function RegisterForm() {
   } = useFormWithErrorHandling<RegisterFormValues>({
     resolver: yupResolver(registerSchema),
     defaultValues: { email: '', password: '', confirmPassword: '' },
-    fallback: 'Registration failed',
+    fallback: t('auth.register.errors.failed'),
   })
 
   useEffect(() => {
@@ -60,15 +67,15 @@ export function RegisterForm() {
   return (
     <Card className="w-full max-w-sm">
       <CardHeader>
-        <CardTitle>Create an account</CardTitle>
-        <CardDescription>Enter your details to join the workspace</CardDescription>
+        <CardTitle>{t('auth.register.title')}</CardTitle>
+        <CardDescription>{t('auth.register.subtitle')}</CardDescription>
       </CardHeader>
       <CardContent>
         <form id="register-form" onSubmit={onSubmit} noValidate className="flex flex-col gap-4">
           <FormInput
             control={control}
             name="email"
-            label="Email"
+            label={t('auth.register.emailLabel')}
             type="email"
             autoComplete="email"
             autoFocus
@@ -76,14 +83,14 @@ export function RegisterForm() {
           <FormInput
             control={control}
             name="password"
-            label="Password"
+            label={t('auth.register.passwordLabel')}
             type="password"
             autoComplete="new-password"
           />
           <FormInput
             control={control}
             name="confirmPassword"
-            label="Confirm password"
+            label={t('auth.register.confirmPasswordLabel')}
             type="password"
             autoComplete="new-password"
           />
@@ -91,7 +98,7 @@ export function RegisterForm() {
       </CardContent>
       <CardFooter>
         <Button form="register-form" type="submit" disabled={isSubmitting} className="w-full">
-          {isSubmitting ? 'Creating account…' : 'Create account'}
+          {isSubmitting ? t('auth.register.submitting') : t('auth.register.submit')}
         </Button>
       </CardFooter>
     </Card>

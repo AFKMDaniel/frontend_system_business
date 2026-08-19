@@ -1,3 +1,6 @@
+import { useTranslation } from '@/shared/i18n'
+
 export function TeamMembersPage() {
-  return <div>Members — coming soon</div>
+  const { t } = useTranslation()
+  return <div>{t('comingSoon.members')}</div>
 }

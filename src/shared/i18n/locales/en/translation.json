@@ -1,0 +1,115 @@
+{
+  "common": {
+    "errors": {
+      "generic": "Something went wrong"
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Sign in",
+      "subtitle": "Enter your credentials to access the workspace",
+      "emailLabel": "Email",
+      "passwordLabel": "Password",
+      "submit": "Sign in",
+      "submitting": "Signing in…",
+      "createAccount": "Create account",
+      "errors": {
+        "email": "Enter a valid email",
+        "usernameRequired": "Username is required",
+        "passwordRequired": "Password is required",
+        "failed": "Login failed"
+      }
+    },
+    "register": {
+      "title": "Create an account",
+      "subtitle": "Enter your details to join the workspace",
+      "emailLabel": "Email",
+      "passwordLabel": "Password",
+      "confirmPasswordLabel": "Confirm password",
+      "submit": "Create account",
+      "submitting": "Creating account…",
+      "errors": {
+        "email": "Enter a valid email",
+        "emailRequired": "Email is required",
+        "passwordRequired": "Password is required",
+        "passwordMin": "Password must be at least 8 characters",
+        "passwordMismatch": "Passwords do not match",
+        "confirmPasswordRequired": "Confirm your password",
+        "failed": "Registration failed"
+      }
+    }
+  },
+  "team": {
+    "name": "Team",
+    "tasks": "Tasks",
+    "members": "Members",
+    "meetings": "Meetings",
+    "join": {
+      "title": "Join a team",
+      "description": "Enter the invite code shared by your manager to join a team.",
+      "inviteCodeLabel": "Invite code",
+      "inviteCodePlaceholder": "e.g. ABC123",
+      "submit": "Join team",
+      "submitting": "Joining…",
+      "errors": {
+        "inviteCodeRequired": "Invite code is required",
+        "failed": "Failed to join the team"
+      }
+    }
+  },
+  "home": {
+    "title": "Home",
+    "teams": "Teams",
+    "teamsSubtitle": "All teams you are part of",
+    "teamsError": "Failed to load teams.",
+    "noTeams": "You're not part of any team yet",
+    "noTeamsHint": "Ask your manager to add you to a team, or join one with an invite code.",
+    "joinTeam": "Join a team"
+  },
+  "task": {
+    "status": {
+      "open": "Open",
+      "work": "In progress",
+      "review": "In review",
+      "closed": "Closed"
+    },
+    "grade": "Grade",
+    "due": "Due",
+    "board": {
+      "loadError": "Failed to load tasks.",
+      "none": "No tasks",
+      "adjustFilters": "Try adjusting the filters.",
+      "assignee": "Assignee",
+      "dateRange": "Date range",
+      "allExecutors": "All executors",
+      "searchExecutor": "Search executor",
+      "noExecutors": "No executors found.",
+      "me": "me"
+    }
+  },
+  "header": {
+    "joinTeam": "Join team",
+    "logOut": "Log out"
+  },
+  "userInfo": {
+    "loadError": "Failed to load user info."
+  },
+  "executor": {
+    "unassigned": "Unassigned"
+  },
+  "forbidden": {
+    "title": "Forbidden"
+  },
+  "comingSoon": {
+    "members": "Members — coming soon",
+    "meetings": "Meetings — coming soon"
+  },
+  "datePicker": {
+    "selectDate": "Select date",
+    "selectStartDate": "Select start date",
+    "selectEndDate": "Select end date"
+  },
+  "languageSwitch": {
+    "label": "Language"
+  }
+}

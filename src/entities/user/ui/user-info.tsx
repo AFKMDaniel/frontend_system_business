@@ -1,10 +1,12 @@
 import { Loader2 } from 'lucide-react'
 
+import { useTranslation } from '@/shared/i18n'
 import { Avatar, AvatarFallback } from '@/shared/ui/avatar'
 
 import { userApi } from '../api'
 
 export function UserInfo() {
+  const { t } = useTranslation()
   const { data: user, isLoading, isError } = userApi.useGetUserMeQuery()
 
   if (isLoading) {
@@ -16,7 +18,7 @@ export function UserInfo() {
   }
 
   if (isError || !user) {
-    return <p className="text-destructive py-6 text-center text-sm">Failed to load user info.</p>
+    return <p className="text-destructive py-6 text-center text-sm">{t('userInfo.loadError')}</p>
   }
 
   return (

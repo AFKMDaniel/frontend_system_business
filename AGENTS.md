@@ -9,6 +9,7 @@ Frontend for a business-management system (teams, tasks, meetings, calendar, com
 - shadcn/ui components (`radix-nova` style) — owned source under `src/shared/ui`, configured in `components.json`
 - Radix primitives via `radix-ui` package; icons via `lucide-react`
 - React Router v7 for routing
+- i18next + react-i18next for localization
 - Feature-Sliced Design (FSD) folder structure
 
 ## Commands
@@ -49,6 +50,16 @@ Directories under `src/` (some still scaffolding):
 - The dialog system lives in `app/dialog/` (composition root, imports allowed in every layer via the store/root-api exception): `types.ts` (IDs + `DialogPropsMap`/`DialogPayload` + `DialogRegistry` mapped type), `slice.ts` (Redux slice + selectors; the only `app/dialog` file imported by the store), `model.ts` (`{ id: component }` registry map — pulls in feature components, so it must never be imported by the store), `ui/dialog-host.tsx` (mounted in `app/providers/index.tsx`).
 - Dialog props types are owned by the feature that renders the dialog (e.g. `JoinTeamDialogProps` in `features/team/join-team/types.ts`) and referenced from `app/dialog/types.ts` via type-only imports.
 - Open a dialog with `dispatch(openDialog({ id: DIALOG_IDS.joinTeam }))`; props are type-checked per dialog ID. Features/widgets/pages import from `@/app/dialog` (contract + slice); `@/app/dialog/ui/dialog-host` is internal to the host.
+
+## Localization
+
+- **i18next + react-i18next** (`i18next`, `i18next-browser-languagedetector`, `react-i18next`). Init lives in `src/shared/i18n/index.ts`, imported once in `src/main.tsx`. Import `useTranslation`/`i18n` from `@/shared/i18n`, never from `react-i18next` directly.
+- Supported languages: `en` (default) and `ru`. Declared in `SUPPORTED_LANGUAGES` in `src/shared/i18n/languages.ts`; add new languages there too.
+- Resources: `src/shared/i18n/locales/<lang>/translation.json`, registered in `resources` in `index.ts`. Keys are type-checked against the `en` file (augmentation in `src/shared/i18n/i18next.d.ts`), so keys must stay in sync across all locale files.
+- Detection: `localStorage` (`language` key) → `navigator`, with `load: 'languageOnly'` (region code stripped, e.g. `en-US` → `en`).
+- Use reactive `useTranslation()` inside components. `i18n.t()` is fine for non-reactive contexts such as yup schema messages at module scope.
+- Dates: use `formatDate()` from `@/shared/i18n/lib/format-date` (picks the date-fns locale via `getDateLocale()` in `src/shared/i18n/lib/date-locale.ts`); add the new locale's mapping there.
+- Language switcher UI: `features/language/ui/language-menu-items.tsx` (header dropdown).
 
 ## Conventions
 

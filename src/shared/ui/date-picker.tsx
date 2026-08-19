@@ -7,6 +7,7 @@ import type { DateRange } from 'react-day-picker'
 import { cn } from '@/shared/lib/utils'
 import { Calendar } from '@/shared/ui/calendar'
 import { FieldLabel } from '@/shared/ui/field'
+import { getDateLocale, useTranslation } from '@/shared/i18n'
 import {
   InputGroup,
   InputGroupAddon,
@@ -110,6 +111,7 @@ function SingleDatePicker({
   const [open, setOpen] = useState(false)
   const [month, setMonth] = useState<Date | undefined>(value)
   const inputId = useId()
+  const { t, i18n } = useTranslation()
 
   const handleCommit = (date: Date | undefined) => {
     if (date) {
@@ -140,7 +142,7 @@ function SingleDatePicker({
               <InputGroupButton
                 variant="ghost"
                 size="icon-xs"
-                aria-label="Select date"
+                aria-label={t('datePicker.selectDate')}
                 onClick={(event) => {
                   event.preventDefault()
                   setOpen(true)
@@ -152,6 +154,7 @@ function SingleDatePicker({
             <PopoverContent className="w-auto p-0" align="end" sideOffset={4}>
               <Calendar
                 mode="single"
+                locale={getDateLocale(i18n.language)}
                 selected={value}
                 month={month}
                 onMonthChange={setMonth}
@@ -180,6 +183,7 @@ function RangeDatePicker({
   const [open, setOpen] = useState(false)
   const [month, setMonth] = useState<Date | undefined>(value?.from)
   const inputId = useId()
+  const { t, i18n } = useTranslation()
 
   const handleFromCommit = (date: Date | undefined) => {
     if (date) {
@@ -223,7 +227,11 @@ function RangeDatePicker({
                 }}
               />
               <InputGroupAddon align="inline-end">
-                <InputGroupButton variant="ghost" size="icon-xs" aria-label="Select start date">
+                <InputGroupButton
+                  variant="ghost"
+                  size="icon-xs"
+                  aria-label={t('datePicker.selectStartDate')}
+                >
                   <CalendarIcon />
                 </InputGroupButton>
               </InputGroupAddon>
@@ -245,7 +253,7 @@ function RangeDatePicker({
                 <InputGroupButton
                   variant="ghost"
                   size="icon-xs"
-                  aria-label="Select end date"
+                  aria-label={t('datePicker.selectEndDate')}
                   onClick={openCalendar}
                 >
                   <CalendarIcon />
@@ -262,6 +270,7 @@ function RangeDatePicker({
       >
         <Calendar
           mode="range"
+          locale={getDateLocale(i18n.language)}
           selected={value}
           month={month}
           onMonthChange={setMonth}

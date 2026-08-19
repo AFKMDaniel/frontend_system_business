@@ -12,6 +12,7 @@ import type {
 import { toast } from 'sonner'
 
 import { isValidationError } from '@/shared/api/error'
+import { i18n } from '@/shared/i18n'
 
 interface UseFormWithErrorHandlingOptions<
   TFieldValues extends FieldValues,
@@ -40,7 +41,7 @@ function setServerError<TFieldValues extends FieldValues>(
 }
 
 export function useFormWithErrorHandling<TFieldValues extends FieldValues, TContext = any>({
-  fallback = 'Something went wrong',
+  fallback = i18n.t('common.errors.generic'),
   ...formOptions
 }: UseFormWithErrorHandlingOptions<TFieldValues, TContext>): UseFormReturn<TFieldValues, TContext> {
   const form = useForm<TFieldValues, TContext>(formOptions)

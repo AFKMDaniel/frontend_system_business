@@ -4,11 +4,13 @@ import { NavLink, generatePath } from 'react-router-dom'
 import { useAppDispatch } from '@/app/providers/store'
 import { DIALOG_IDS, openDialog } from '@/app/dialog'
 import { UserInfo, userApi } from '@/entities/user'
+import { useTranslation } from '@/shared/i18n'
 import { Button } from '@/shared/ui/button'
 import { ROUTES } from '@/shared/config'
 
 export function HomePage() {
   const dispatch = useAppDispatch()
+  const { t } = useTranslation()
   const { data: user, isLoading, isError } = userApi.useGetUserMeQuery()
   const teams = user?.teams ?? []
 
@@ -20,8 +22,8 @@ export function HomePage() {
 
       <div className="w-full">
         <div className="mb-6">
-          <h1 className="text-xl font-semibold">Teams</h1>
-          <p className="text-muted-foreground text-sm">All teams you are part of</p>
+          <h1 className="text-xl font-semibold">{t('home.teams')}</h1>
+          <p className="text-muted-foreground text-sm">{t('home.teamsSubtitle')}</p>
         </div>
 
         {isLoading ? (
@@ -29,19 +31,17 @@ export function HomePage() {
             <Loader2 className="text-muted-foreground size-6 animate-spin" />
           </div>
         ) : isError ? (
-          <p className="text-destructive text-sm">Failed to load teams.</p>
+          <p className="text-destructive text-sm">{t('home.teamsError')}</p>
         ) : teams.length === 0 ? (
           <div className="flex flex-col items-center gap-3 rounded-lg border border-dashed px-6 py-16 text-center">
             <div className="bg-muted text-muted-foreground flex size-12 items-center justify-center rounded-full">
               <Users className="size-5" />
             </div>
             <div>
-              <h2 className="text-base font-medium">You're not part of any team yet</h2>
-              <p className="text-muted-foreground mt-1 text-sm">
-                Ask your manager to add you to a team, or join one with an invite code.
-              </p>
+              <h2 className="text-base font-medium">{t('home.noTeams')}</h2>
+              <p className="text-muted-foreground mt-1 text-sm">{t('home.noTeamsHint')}</p>
             </div>
-            <Button onClick={openJoinTeamDialog}>Join a team</Button>
+            <Button onClick={openJoinTeamDialog}>{t('home.joinTeam')}</Button>
           </div>
         ) : (
           <ul className="bg-card divide-y overflow-hidden rounded-lg border">

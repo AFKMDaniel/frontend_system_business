@@ -1,12 +1,13 @@
 import type { ReactNode } from 'react'
-import { format } from 'date-fns'
 import { CalendarDays } from 'lucide-react'
 
 import { cn } from '@/shared/lib/utils'
+import { formatDate } from '@/shared/i18n/lib/format-date'
+import { useTranslation } from '@/shared/i18n'
 import { Badge } from '@/shared/ui/badge'
 import { Card, CardContent, CardHeader } from '@/shared/ui/card'
 
-import { STATUS_LABELS } from '../lib/status'
+import { STATUS_LABEL_KEYS } from '../lib/status'
 
 import type { TaskSchema } from '../types'
 import type { StatusTask } from '../lib/status'
@@ -48,16 +49,21 @@ type TaskCardProps = {
 
 export function TaskCard({ task, executor }: TaskCardProps) {
   const meta = STATUS_META[task.status]
+  const { t } = useTranslation()
 
   return (
     <Card className={cn('border-l-4', meta.accentClassName)}>
       <CardHeader>
         <div className="flex flex-wrap items-center gap-1.5">
           <Badge variant={meta.badgeVariant} className={meta.badgeClassName || undefined}>
-            {STATUS_LABELS[task.status]}
+            {t(STATUS_LABEL_KEYS[task.status])}
           </Badge>
           {/*  TODO: make grade shared component with stars */}
-          {task.grade != null ? <Badge variant="outline">Grade {task.grade}/5</Badge> : null}
+          {task.grade != null ? (
+            <Badge variant="outline">
+              {t('task.grade')} {task.grade}/5
+            </Badge>
+          ) : null}
         </div>
       </CardHeader>
       <CardContent className="flex flex-col gap-3">
@@ -65,7 +71,9 @@ export function TaskCard({ task, executor }: TaskCardProps) {
         <div className="flex items-center justify-between gap-2">
           <span className="text-muted-foreground flex min-w-0 items-center gap-1.5 text-xs">
             <CalendarDays className="size-3.5 shrink-0" />
-            <span>Due {format(new Date(task.deadline), 'd MMM yyyy')}</span>
+            <span>
+              {t('task.due')} {formatDate(new Date(task.deadline), 'd MMM yyyy')}
+            </span>
           </span>
           {executor(task.executor_user_id)}
         </div>
