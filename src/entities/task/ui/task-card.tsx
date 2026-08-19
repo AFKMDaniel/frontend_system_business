@@ -6,6 +6,7 @@ import { formatDate } from '@/shared/i18n/lib/format-date'
 import { useTranslation } from '@/shared/i18n'
 import { Badge } from '@/shared/ui/badge'
 import { Card, CardContent, CardHeader } from '@/shared/ui/card'
+import { Rating } from '@/shared/ui/rating'
 
 import { STATUS_LABEL_KEYS } from '../lib/status'
 
@@ -58,11 +59,10 @@ export function TaskCard({ task, executor }: TaskCardProps) {
           <Badge variant={meta.badgeVariant} className={meta.badgeClassName || undefined}>
             {t(STATUS_LABEL_KEYS[task.status])}
           </Badge>
-          {/*  TODO: make grade shared component with stars */}
           {task.grade != null ? (
-            <Badge variant="outline">
-              {t('task.grade')} {task.grade}/5
-            </Badge>
+            <div className="flex items-center gap-1.5">
+              <Rating rate={task.grade} />
+            </div>
           ) : null}
         </div>
       </CardHeader>

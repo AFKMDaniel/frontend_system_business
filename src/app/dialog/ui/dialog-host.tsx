@@ -5,12 +5,7 @@ import { useAppDispatch, useAppSelector } from '@/app/providers/store'
 import { Dialog, DialogContent } from '@/shared/ui/dialog'
 
 import { dialogRegistry } from '../model'
-import {
-  clearDialogContent,
-  closeDialog,
-  selectDialogContent,
-  selectDialogIsOpen,
-} from '../slice'
+import { clearDialogContent, closeDialog, selectDialogContent, selectDialogIsOpen } from '../slice'
 import type { DialogId, DialogPropsMap } from '../types'
 
 function renderDialog<K extends DialogId>(id: K, props?: DialogPropsMap[K]): ReactNode {

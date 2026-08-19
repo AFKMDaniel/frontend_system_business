@@ -39,6 +39,12 @@
       }
     }
   },
+  "roles": {
+    "admin": "Administrator",
+    "user": "User",
+    "manager": "Manager",
+    "employee": "Employee"
+  },
   "team": {
     "name": "Team",
     "tasks": "Tasks",
@@ -64,7 +70,9 @@
     "teamsError": "Failed to load teams.",
     "noTeams": "You're not part of any team yet",
     "noTeamsHint": "Ask your manager to add you to a team, or join one with an invite code.",
-    "joinTeam": "Join a team"
+    "joinTeam": "Join a team",
+    "avgGrade": "Average grade",
+    "avgGradeError": "Failed to load average grade."
   },
   "task": {
     "status": {
@@ -74,6 +82,7 @@
       "closed": "Closed"
     },
     "grade": "Grade",
+    "rating": "{{value}} out of 5",
     "due": "Due",
     "board": {
       "loadError": "Failed to load tasks.",
@@ -111,5 +120,11 @@
   },
   "languageSwitch": {
     "label": "Language"
+  },
+  "themeSwitch": {
+    "label": "Theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
   }
 }

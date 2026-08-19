@@ -5,6 +5,7 @@ import { DIALOG_IDS, openDialog } from '@/app/dialog'
 import { useAppDispatch } from '@/app/providers/store'
 import { userApi } from '@/entities/user'
 import { LanguageMenuItems } from '@/features/language/ui/language-menu-items'
+import { ThemeMenuItems } from '@/features/theme/ui/theme-menu-items'
 import { useTranslation } from '@/shared/i18n'
 import { cn } from '@/shared/lib/utils'
 import { Avatar, AvatarFallback } from '@/shared/ui/avatar'
@@ -63,6 +64,8 @@ export function Header({ title, tabs }: HeaderProps) {
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <LanguageMenuItems />
+              <DropdownMenuSeparator />
+              <ThemeMenuItems />
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

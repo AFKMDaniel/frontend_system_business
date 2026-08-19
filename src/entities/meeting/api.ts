@@ -21,7 +21,10 @@ export const meetingApi = rootApi.injectEndpoints({
       query: ({ teamId, meetingId }) => API_ENDPOINTS.teams.meeting(teamId, meetingId),
       providesTags: ['Meeting'],
     }),
-    createMeeting: builder.mutation<MeetingOutSchema, { teamId: number; body: MeetingCreateSchema }>({
+    createMeeting: builder.mutation<
+      MeetingOutSchema,
+      { teamId: number; body: MeetingCreateSchema }
+    >({
       query: ({ teamId, body }) => ({
         url: API_ENDPOINTS.teams.meetings(teamId),
         method: 'POST',
@@ -47,7 +50,10 @@ export const meetingApi = rootApi.injectEndpoints({
       }),
       invalidatesTags: ['Meeting'],
     }),
-    removeMeetingParticipants: builder.mutation<void, { teamId: number; meetingId: number; body: number[] }>({
+    removeMeetingParticipants: builder.mutation<
+      void,
+      { teamId: number; meetingId: number; body: number[] }
+    >({
       query: ({ teamId, meetingId, body }) => ({
         url: API_ENDPOINTS.teams.meetingParticipants(teamId, meetingId),
         method: 'DELETE',

@@ -1,5 +1,12 @@
 export type AccessToken = string
 
+export const APP_ROLES = {
+  admin: 'admin',
+  user: 'user',
+} as const
+
+export type AppRole = (typeof APP_ROLES)[keyof typeof APP_ROLES]
+
 export interface AuthTokenResponse {
   access_token: string
   token_type: string

@@ -1,16 +1,7 @@
 import type { ComponentProps } from 'react'
-import {
-  useController,
-  type Control,
-  type FieldPath,
-  type FieldValues,
-} from 'react-hook-form'
+import { useController, type Control, type FieldPath, type FieldValues } from 'react-hook-form'
 
-import {
-  Field,
-  FieldError,
-  FieldLabel,
-} from '@/shared/ui/field'
+import { Field, FieldError, FieldLabel } from '@/shared/ui/field'
 import { Input } from '@/shared/ui/input'
 
 interface FormInputProps<
@@ -22,10 +13,7 @@ interface FormInputProps<
   label: string
 }
 
-function FormInput<
-  TFieldValues extends FieldValues,
-  TName extends FieldPath<TFieldValues>,
->({
+function FormInput<TFieldValues extends FieldValues, TName extends FieldPath<TFieldValues>>({
   control,
   name,
   label,
@@ -36,12 +24,7 @@ function FormInput<
   return (
     <Field data-invalid={fieldState.invalid}>
       <FieldLabel htmlFor={name}>{label}</FieldLabel>
-      <Input
-        id={name}
-        aria-invalid={fieldState.invalid}
-        {...inputProps}
-        {...field}
-      />
+      <Input id={name} aria-invalid={fieldState.invalid} {...inputProps} {...field} />
       <FieldError errors={fieldState.error ? [fieldState.error] : []} />
     </Field>
   )

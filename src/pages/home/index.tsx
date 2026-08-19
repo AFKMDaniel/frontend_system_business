@@ -1,12 +1,11 @@
 import { Loader2, Users } from 'lucide-react'
-import { NavLink, generatePath } from 'react-router-dom'
 
 import { useAppDispatch } from '@/app/providers/store'
 import { DIALOG_IDS, openDialog } from '@/app/dialog'
 import { UserInfo, userApi } from '@/entities/user'
+import { TeamListItem } from '@/entities/team'
 import { useTranslation } from '@/shared/i18n'
 import { Button } from '@/shared/ui/button'
-import { ROUTES } from '@/shared/config'
 
 export function HomePage() {
   const dispatch = useAppDispatch()
@@ -44,24 +43,9 @@ export function HomePage() {
             <Button onClick={openJoinTeamDialog}>{t('home.joinTeam')}</Button>
           </div>
         ) : (
-          <ul className="bg-card divide-y overflow-hidden rounded-lg border">
+          <ul className="flex flex-col gap-3">
             {teams.map((membership) => (
-              <li key={membership.team.id}>
-                <NavLink
-                  to={generatePath(ROUTES.team, { teamId: String(membership.team.id) })}
-                  className="hover:bg-muted/50 flex items-center gap-3 px-4 py-3 transition-colors"
-                >
-                  <div className="bg-muted text-muted-foreground flex size-8 shrink-0 items-center justify-center rounded-lg border">
-                    <Users className="size-4" />
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-medium">{membership.team.name}</p>
-                    {membership.role ? (
-                      <p className="text-muted-foreground text-xs">{membership.role}</p>
-                    ) : null}
-                  </div>
-                </NavLink>
-              </li>
+              <TeamListItem key={membership.team.id} membership={membership} />
             ))}
           </ul>
         )}

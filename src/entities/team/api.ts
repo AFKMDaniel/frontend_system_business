@@ -26,10 +26,7 @@ export const teamApi = rootApi.injectEndpoints({
     >({
       query: ({ teamId }) => API_ENDPOINTS.teams.members(teamId),
       transformResponse: (response: TeamResponseSchema) =>
-        teamMemberAdapter.setAll(
-          teamMemberAdapter.getInitialState(),
-          response.members,
-        ),
+        teamMemberAdapter.setAll(teamMemberAdapter.getInitialState(), response.members),
       providesTags: ['Team'],
     }),
     addTeamMember: builder.mutation<

@@ -1,4 +1,5 @@
 export * from './types'
 export * from './api'
 export { ExecutorInfo } from './ui/executor-info'
+export { TeamListItem } from './ui/team-list-item'
 export * from './lib/member-adapter'

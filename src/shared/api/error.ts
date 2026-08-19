@@ -99,6 +99,10 @@ export function normalizeApiError(error: FetchBaseQueryError): ApiError {
   }
 }
 
-export function isValidationError(error: unknown): error is Extract<ApiError, { kind: 'validation' }> {
-  return typeof error === 'object' && error !== null && (error as ApiError | null)?.kind === 'validation'
+export function isValidationError(
+  error: unknown,
+): error is Extract<ApiError, { kind: 'validation' }> {
+  return (
+    typeof error === 'object' && error !== null && (error as ApiError | null)?.kind === 'validation'
+  )
 }

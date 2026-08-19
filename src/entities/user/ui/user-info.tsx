@@ -3,6 +3,7 @@ import { Loader2 } from 'lucide-react'
 import { useTranslation } from '@/shared/i18n'
 import { Avatar, AvatarFallback } from '@/shared/ui/avatar'
 
+import { getRoleLabel } from '../lib/get-role-label'
 import { userApi } from '../api'
 
 export function UserInfo() {
@@ -36,7 +37,7 @@ export function UserInfo() {
               key={role.name}
               className="bg-muted text-muted-foreground inline-flex items-center rounded-full px-2.5 py-0.5 text-sm font-medium"
             >
-              {role.name}
+              {getRoleLabel(t, role.name)}
             </span>
           ))}
         </div>
