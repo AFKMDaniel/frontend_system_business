@@ -1,7 +1,7 @@
 import { useEffect, useId, useState } from 'react'
 import type { ComponentProps } from 'react'
 import { format, isValid, parse } from 'date-fns'
-import { CalendarIcon } from 'lucide-react'
+import { CalendarIcon, XIcon } from 'lucide-react'
 import type { DateRange } from 'react-day-picker'
 
 import { cn } from '@/shared/lib/utils'
@@ -121,54 +121,78 @@ function SingleDatePicker({
   }
 
   return (
-    <div className={cn('flex flex-col gap-1.5', className)}>
-      {label ? <FieldLabel htmlFor={inputId}>{label}</FieldLabel> : null}
-      <InputGroup className="w-40">
-        <DateMaskInput
-          id={inputId}
-          value={value}
-          onCommit={handleCommit}
-          placeholder={placeholder}
-          onKeyDown={(event) => {
-            if (event.key === 'ArrowDown') {
-              event.preventDefault()
-              setOpen(true)
-            }
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <div
+          className={cn('flex flex-col gap-1.5', className)}
+          onClick={(event) => {
+            event.preventDefault()
+            setOpen(true)
           }}
-        />
-        <InputGroupAddon align="inline-end">
-          <Popover open={open} onOpenChange={setOpen}>
-            <PopoverTrigger asChild>
-              <InputGroupButton
-                variant="ghost"
-                size="icon-xs"
-                aria-label={t('datePicker.selectDate')}
-                onClick={(event) => {
+        >
+          {label ? <FieldLabel htmlFor={inputId}>{label}</FieldLabel> : null}
+          <InputGroup className="w-40">
+            <DateMaskInput
+              id={inputId}
+              value={value}
+              onCommit={handleCommit}
+              placeholder={placeholder}
+              onFocus={() => setOpen(true)}
+              onKeyDown={(event) => {
+                if (event.key === 'ArrowDown') {
                   event.preventDefault()
                   setOpen(true)
-                }}
-              >
-                <CalendarIcon />
-              </InputGroupButton>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0" align="end" sideOffset={4}>
-              <Calendar
-                mode="single"
-                locale={getDateLocale(i18n.language)}
-                selected={value}
-                month={month}
-                onMonthChange={setMonth}
-                onSelect={(date) => {
-                  setMonth(date)
-                  onSelect?.(date)
-                  setOpen(false)
-                }}
-              />
-            </PopoverContent>
-          </Popover>
-        </InputGroupAddon>
-      </InputGroup>
-    </div>
+                }
+              }}
+            />
+            <InputGroupAddon align="inline-end">
+              {value ? (
+                <InputGroupButton
+                  type="button"
+                  variant="ghost"
+                  size="icon-xs"
+                  aria-label={t('datePicker.clearDate')}
+                  onClick={(event) => {
+                    event.preventDefault()
+                    event.stopPropagation()
+                    onSelect?.(undefined)
+                  }}
+                >
+                  <XIcon />
+                </InputGroupButton>
+              ) : (
+                <InputGroupButton
+                  type="button"
+                  variant="ghost"
+                  size="icon-xs"
+                  aria-label={t('datePicker.selectDate')}
+                >
+                  <CalendarIcon />
+                </InputGroupButton>
+              )}
+            </InputGroupAddon>
+          </InputGroup>
+        </div>
+      </PopoverTrigger>
+      <PopoverContent
+        onOpenAutoFocus={(e) => e.preventDefault()}
+        className="w-auto p-0"
+        sideOffset={4}
+      >
+        <Calendar
+          mode="single"
+          locale={getDateLocale(i18n.language)}
+          selected={value}
+          month={month}
+          onMonthChange={setMonth}
+          onSelect={(date) => {
+            setMonth(date)
+            onSelect?.(date)
+            setOpen(false)
+          }}
+        />
+      </PopoverContent>
+    </Popover>
   )
 }
 
@@ -199,8 +223,6 @@ function RangeDatePicker({
     onSelect?.({ from: value?.from, to: date })
   }
 
-  const openCalendar = () => setOpen(true)
-
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -219,6 +241,7 @@ function RangeDatePicker({
                 value={value?.from}
                 onCommit={handleFromCommit}
                 placeholder={fromPlaceholder}
+                onFocus={() => setOpen(true)}
                 onKeyDown={(event) => {
                   if (event.key === 'ArrowDown') {
                     event.preventDefault()
@@ -227,13 +250,30 @@ function RangeDatePicker({
                 }}
               />
               <InputGroupAddon align="inline-end">
-                <InputGroupButton
-                  variant="ghost"
-                  size="icon-xs"
-                  aria-label={t('datePicker.selectStartDate')}
-                >
-                  <CalendarIcon />
-                </InputGroupButton>
+                {value?.from ? (
+                  <InputGroupButton
+                    type="button"
+                    variant="ghost"
+                    size="icon-xs"
+                    aria-label={t('datePicker.clearStartDate')}
+                    onClick={(event) => {
+                      event.preventDefault()
+                      event.stopPropagation()
+                      handleFromCommit(undefined)
+                    }}
+                  >
+                    <XIcon />
+                  </InputGroupButton>
+                ) : (
+                  <InputGroupButton
+                    type="button"
+                    variant="ghost"
+                    size="icon-xs"
+                    aria-label={t('datePicker.selectStartDate')}
+                  >
+                    <CalendarIcon />
+                  </InputGroupButton>
+                )}
               </InputGroupAddon>
             </InputGroup>
 
@@ -242,6 +282,7 @@ function RangeDatePicker({
                 value={value?.to}
                 onCommit={handleToCommit}
                 placeholder={toPlaceholder}
+                onFocus={() => setOpen(true)}
                 onKeyDown={(event) => {
                   if (event.key === 'ArrowDown') {
                     event.preventDefault()
@@ -250,14 +291,30 @@ function RangeDatePicker({
                 }}
               />
               <InputGroupAddon align="inline-end">
-                <InputGroupButton
-                  variant="ghost"
-                  size="icon-xs"
-                  aria-label={t('datePicker.selectEndDate')}
-                  onClick={openCalendar}
-                >
-                  <CalendarIcon />
-                </InputGroupButton>
+                {value?.to ? (
+                  <InputGroupButton
+                    type="button"
+                    variant="ghost"
+                    size="icon-xs"
+                    aria-label={t('datePicker.clearEndDate')}
+                    onClick={(event) => {
+                      event.preventDefault()
+                      event.stopPropagation()
+                      handleToCommit(undefined)
+                    }}
+                  >
+                    <XIcon />
+                  </InputGroupButton>
+                ) : (
+                  <InputGroupButton
+                    type="button"
+                    variant="ghost"
+                    size="icon-xs"
+                    aria-label={t('datePicker.selectEndDate')}
+                  >
+                    <CalendarIcon />
+                  </InputGroupButton>
+                )}
               </InputGroupAddon>
             </InputGroup>
           </div>

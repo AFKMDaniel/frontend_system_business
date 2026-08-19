@@ -61,6 +61,15 @@ Directories under `src/` (some still scaffolding):
 - Dates: use `formatDate()` from `@/shared/i18n/lib/format-date` (picks the date-fns locale via `getDateLocale()` in `src/shared/i18n/lib/date-locale.ts`); add the new locale's mapping there.
 - Language switcher UI: `features/language/ui/language-menu-items.tsx` (header dropdown).
 
+## Forms (react-hook-form)
+
+- **react-hook-form** is the form library (`useForm`, `useController`). Bind controls through the wrappers in `src/shared/ui/form/`: `form-input.tsx` (`FormInput`), `form-combobox.tsx` (`FormCombobox`), `form-date-picker.tsx` (`FormDatePicker`). Prefer these over raw RHF binding.
+- The wrappers use `useController({ control, name })` (not the `<Controller>` component) and are generic over `TFieldValues`/`TName`; `FormCombobox` is additionally generic over the option type `TOption` and stores the selected option object in the form field.
+- `FormInput` renders `Field`/`FieldLabel`/`FieldError`; `FormCombobox`/`FormDatePicker` render only the bound control — supply labels with `FilterGroup` or `Field`/`FieldLabel`.
+- Pick the hook per form: plain `useForm` for local/transient forms (e.g. the task filter); `useFormWithErrorHandling` from `@/shared/lib/use-form-with-error-handling` for forms that submit to the server (adds field-level server errors + toast fallback).
+- Submit-button pattern: `<Button type="submit" disabled={!isDirty}>`; after applying/committing call `reset(values)` so `isDirty` returns to `false` and the button re-disables.
+- **Missing a wrapper? Create one.** If a control has no `Form*` wrapper, add `src/shared/ui/form/form-<control>.tsx` following the same `useController` pattern: render the underlying control with `field.value`/`field.onChange`. When the control takes an array of options, type that prop as `readonly TOption[]` (Base UI's `items` is `readonly any[]`, so without an explicit type the option generic can't be inferred from it).
+
 ## Conventions
 
 - File names and the components they export must match: a component file's name (kebab-case) must correspond to its main exported component (PascalCase), e.g. `task-list-body.tsx` exports `TaskListBody`. `index.tsx` is reserved as a folder entry/barrel (public API), not a component file.

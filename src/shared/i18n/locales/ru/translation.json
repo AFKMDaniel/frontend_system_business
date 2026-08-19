@@ -93,7 +93,8 @@
       "allExecutors": "Все исполнители",
       "searchExecutor": "Поиск исполнителя",
       "noExecutors": "Исполнители не найдены.",
-      "me": "я"
+      "me": "я",
+      "apply": "Применить"
     }
   },
   "header": {
@@ -116,7 +117,10 @@
   "datePicker": {
     "selectDate": "Выбрать дату",
     "selectStartDate": "Выбрать дату начала",
-    "selectEndDate": "Выбрать дату окончания"
+    "selectEndDate": "Выбрать дату окончания",
+    "clearDate": "Очистить дату",
+    "clearStartDate": "Очистить дату начала",
+    "clearEndDate": "Очистить дату окончания"
   },
   "languageSwitch": {
     "label": "Язык"

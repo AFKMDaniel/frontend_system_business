@@ -8,7 +8,7 @@ import { useFormWithErrorHandling } from '@/shared/lib/use-form-with-error-handl
 import { i18n, useTranslation } from '@/shared/i18n'
 import { Button } from '@/shared/ui/button'
 import { DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/shared/ui/dialog'
-import { FormInput } from '@/shared/ui/form-input'
+import { FormInput } from '@/shared/ui/form/form-input'
 
 export type { JoinTeamDialogProps } from './types'
 

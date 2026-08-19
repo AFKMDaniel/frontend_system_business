@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { format } from 'date-fns'
+import { useForm } from 'react-hook-form'
 import { useParams } from 'react-router-dom'
 import type { DateRange } from 'react-day-picker'
 
@@ -11,10 +12,10 @@ import { userApi } from '@/entities/user'
 import { useTranslation } from '@/shared/i18n'
 import { Avatar, AvatarFallback } from '@/shared/ui/avatar'
 import { Button } from '@/shared/ui/button'
-import { DatePicker } from '@/shared/ui/date-picker'
 import { FilterGroup } from '@/shared/ui/filter-group'
+import { FormCombobox } from '@/shared/ui/form/form-combobox'
+import { FormDatePicker } from '@/shared/ui/form/form-date-picker'
 import {
-  Combobox,
   ComboboxContent,
   ComboboxEmpty,
   ComboboxInput,
@@ -29,9 +30,14 @@ import type { TaskListParams } from '@/entities/task'
 import { TaskBoardBody } from './ui/task-board-body'
 
 type ExecutorOption = {
-  id: string
+  value: string
   label: string
   userId?: number
+}
+
+type TaskFilterFormValues = {
+  executor: ExecutorOption
+  dateRange?: DateRange
 }
 
 export function TeamTaskBoard() {
@@ -39,22 +45,66 @@ export function TeamTaskBoard() {
   const skip = !teamId
   const { t } = useTranslation()
 
-  const [executorId, setExecutorId] = useState<number | null>(null)
-  const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined)
+  const { data: members } = teamApi.useGetTeamMembersQuery(
+    { teamId: Number(teamId) },
+    {
+      skip,
+      selectFromResult: ({ data }) => ({
+        data: data ? selectAllMembers(data) : undefined,
+      }),
+    },
+  )
+
+  const executorOptions = useMemo<ExecutorOption[]>(
+    () => [
+      { value: 'all', label: t('task.board.allExecutors') },
+      ...(members ?? []).map((member) => ({
+        value: String(member.user.id),
+        label: member.user.email,
+        userId: member.user.id,
+      })),
+    ],
+    [members, t],
+  )
+
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { isDirty },
+  } = useForm<TaskFilterFormValues>({
+    defaultValues: {
+      executor: executorOptions[0],
+      dateRange: undefined,
+    },
+  })
+  const [appliedFilters, setAppliedFilters] = useState<{
+    executorId: number | null
+    dateRange?: DateRange
+  }>({ executorId: null })
 
   const params = useMemo<TaskListParams>(() => {
     const next: TaskListParams = {}
-    if (executorId != null) {
-      next.executor_user_id = executorId
+    if (appliedFilters.executorId != null) {
+      next.executor_user_id = appliedFilters.executorId
     }
-    if (dateRange?.from) {
-      next.start_date = format(dateRange.from, 'yyyy-MM-dd')
+    if (appliedFilters.dateRange?.from) {
+      next.start_date = format(appliedFilters.dateRange.from, 'yyyy-MM-dd')
     }
-    if (dateRange?.to) {
-      next.end_date = format(dateRange.to, 'yyyy-MM-dd')
+    if (appliedFilters.dateRange?.to) {
+      next.end_date = format(appliedFilters.dateRange.to, 'yyyy-MM-dd')
     }
     return next
-  }, [executorId, dateRange])
+  }, [appliedFilters])
+
+  const onSubmit = handleSubmit((values) => {
+    setAppliedFilters({
+      executorId:
+        values.executor && values.executor.value !== 'all' ? Number(values.executor.value) : null,
+      dateRange: values.dateRange,
+    })
+    reset(values)
+  })
 
   const {
     data: tasksByStatus,
@@ -71,36 +121,8 @@ export function TeamTaskBoard() {
       }),
     },
   )
-  const { data: members } = teamApi.useGetTeamMembersQuery(
-    { teamId: Number(teamId) },
-    {
-      skip,
-      selectFromResult: ({ data }) => ({
-        data: data ? selectAllMembers(data) : undefined,
-      }),
-    },
-  )
+
   const { data: currentUser } = userApi.useGetUserMeQuery()
-
-  const executorOptions = useMemo<ExecutorOption[]>(
-    () => [
-      { id: 'all', label: t('task.board.allExecutors') },
-      ...(members ?? []).map((member) => ({
-        id: String(member.user.id),
-        label: member.user.email,
-        userId: member.user.id,
-      })),
-    ],
-    [members, t],
-  )
-
-  const selectedExecutor = useMemo(
-    () =>
-      executorOptions.find((option) =>
-        option.id === 'all' ? executorId == null : option.id === String(executorId),
-      ) ?? executorOptions[0],
-    [executorOptions, executorId],
-  )
 
   if (!teamId) {
     return null
@@ -108,53 +130,56 @@ export function TeamTaskBoard() {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex flex-wrap items-start gap-4">
-        <FilterGroup label={t('task.board.assignee')}>
-          <Combobox
-            items={executorOptions}
-            value={selectedExecutor}
-            onValueChange={(option) =>
-              setExecutorId(option && option.id !== 'all' ? Number(option.id) : null)
-            }
-            itemToStringValue={(option) =>
-              option.userId != null && option.userId === currentUser?.id
-                ? `${option.label} (${t('task.board.me')})`
-                : option.label
-            }
-          >
-            <ComboboxTrigger
-              render={<Button variant="outline" className="w-56 justify-between font-normal" />}
+      <form onSubmit={onSubmit} className="flex flex-col gap-4">
+        <div className="flex flex-wrap items-start gap-4">
+          <FilterGroup label={t('task.board.assignee')}>
+            <FormCombobox
+              control={control}
+              name="executor"
+              items={executorOptions}
+              itemToStringLabel={(option) =>
+                executorOptions.find((item) => item.value === option.value)?.label ?? option.label
+              }
             >
-              <ComboboxValue />
-            </ComboboxTrigger>
-            <ComboboxContent>
-              <ComboboxInput showTrigger={false} placeholder={t('task.board.searchExecutor')} />
-              <ComboboxEmpty>{t('task.board.noExecutors')}</ComboboxEmpty>
-              <ComboboxList>
-                {(option) => (
-                  <ComboboxItem key={option.id} value={option}>
-                    {option.userId != null && (
-                      <Avatar size="sm">
-                        <AvatarFallback>{option.label.charAt(0).toUpperCase()}</AvatarFallback>
-                      </Avatar>
-                    )}
-                    <span className="truncate">
-                      {option.label}
-                      {option.userId != null && option.userId === currentUser?.id && (
-                        <span className="text-muted-foreground"> ({t('task.board.me')})</span>
+              <ComboboxTrigger
+                type="button"
+                render={<Button variant="outline" className="w-56 justify-between font-normal" />}
+              >
+                <ComboboxValue />
+              </ComboboxTrigger>
+              <ComboboxContent>
+                <ComboboxInput showTrigger={false} placeholder={t('task.board.searchExecutor')} />
+                <ComboboxEmpty>{t('task.board.noExecutors')}</ComboboxEmpty>
+                <ComboboxList>
+                  {(option) => (
+                    <ComboboxItem key={option.value} value={option}>
+                      {option.userId != null && (
+                        <Avatar size="sm">
+                          <AvatarFallback>{option.label.charAt(0).toUpperCase()}</AvatarFallback>
+                        </Avatar>
                       )}
-                    </span>
-                  </ComboboxItem>
-                )}
-              </ComboboxList>
-            </ComboboxContent>
-          </Combobox>
-        </FilterGroup>
+                      <span className="truncate">
+                        {option.label}
+                        {option.userId != null && option.userId === currentUser?.id && (
+                          <span className="text-muted-foreground"> ({t('task.board.me')})</span>
+                        )}
+                      </span>
+                    </ComboboxItem>
+                  )}
+                </ComboboxList>
+              </ComboboxContent>
+            </FormCombobox>
+          </FilterGroup>
 
-        <FilterGroup label={t('task.board.dateRange')}>
-          <DatePicker mode="range" value={dateRange} onSelect={setDateRange} />
-        </FilterGroup>
-      </div>
+          <FilterGroup label={t('task.board.dateRange')}>
+            <FormDatePicker control={control} name="dateRange" mode="range" />
+          </FilterGroup>
+
+          <Button type="submit" disabled={!isDirty} className="mt-5.5">
+            {t('task.board.apply')}
+          </Button>
+        </div>
+      </form>
 
       <TaskBoardBody
         isFetching={isFetching}

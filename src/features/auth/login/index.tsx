@@ -6,7 +6,7 @@ import { useAppDispatch } from '@/app/providers/store'
 import { login } from '@/entities/user/auth-thunks'
 import { useFormWithErrorHandling } from '@/shared/lib/use-form-with-error-handling'
 import { i18n, useTranslation } from '@/shared/i18n'
-import { FormInput } from '@/shared/ui/form-input'
+import { FormInput } from '@/shared/ui/form/form-input'
 import { Button } from '@/shared/ui/button'
 import { ROUTES } from '@/shared/config'
 import {

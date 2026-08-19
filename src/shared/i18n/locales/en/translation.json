@@ -93,7 +93,8 @@
       "allExecutors": "All executors",
       "searchExecutor": "Search executor",
       "noExecutors": "No executors found.",
-      "me": "me"
+      "me": "me",
+      "apply": "Apply"
     }
   },
   "header": {
@@ -116,7 +117,10 @@
   "datePicker": {
     "selectDate": "Select date",
     "selectStartDate": "Select start date",
-    "selectEndDate": "Select end date"
+    "selectEndDate": "Select end date",
+    "clearDate": "Clear date",
+    "clearStartDate": "Clear start date",
+    "clearEndDate": "Clear end date"
   },
   "languageSwitch": {
     "label": "Language"
