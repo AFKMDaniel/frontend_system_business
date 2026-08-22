@@ -1,0 +1,34 @@
+import type { ReactNode } from 'react'
+import { useDraggable } from '@dnd-kit/react'
+
+import { TaskCard } from '@/entities/task'
+import { userApi, usePrivileged } from '@/entities/user'
+import { cn } from '@/shared/lib/utils'
+
+import type { TaskSchema } from '@/entities/task'
+
+type DraggableTaskCardProps = {
+  teamId: number
+  task: TaskSchema
+  executor: (userId: number | null) => ReactNode
+}
+
+export function DraggableTaskCard({ teamId, task, executor }: DraggableTaskCardProps) {
+  const isPrivileged = usePrivileged(teamId)
+  const { data: currentUser } = userApi.useGetUserMeQuery()
+  const currentUserId = currentUser?.id ?? null
+  const isExecutor = task.executor_user_id === currentUserId
+  const isMovable = isPrivileged || isExecutor
+
+  const { ref, isDragging } = useDraggable({
+    id: task.id,
+    data: { taskId: task.id, status: task.status, executorUserId: task.executor_user_id },
+    disabled: !isMovable,
+  })
+
+  return (
+    <div ref={ref} className={cn(isMovable && 'cursor-grab', isDragging && 'opacity-60')}>
+      <TaskCard task={task} executor={executor} />
+    </div>
+  )
+}

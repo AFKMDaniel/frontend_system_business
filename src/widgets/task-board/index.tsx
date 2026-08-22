@@ -108,15 +108,15 @@ export function TeamTaskBoard() {
 
   const {
     data: tasksByStatus,
-    isFetching,
+    isLoading,
     isError,
   } = taskApi.useGetTasksQuery(
     { teamId: Number(teamId), params },
     {
       skip,
-      selectFromResult: ({ data, isFetching, isError }) => ({
+      selectFromResult: ({ data, isLoading, isError }) => ({
         data: data ? selectTasksByStatus(data) : null,
-        isFetching,
+        isLoading,
         isError,
       }),
     },
@@ -182,7 +182,7 @@ export function TeamTaskBoard() {
       </form>
 
       <TaskBoardBody
-        isFetching={isFetching}
+        isLoading={isLoading}
         isError={isError}
         tasksByStatus={tasksByStatus}
         teamId={Number(teamId)}

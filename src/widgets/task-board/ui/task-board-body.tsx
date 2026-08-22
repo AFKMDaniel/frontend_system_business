@@ -1,23 +1,23 @@
 import { ListTodo, Loader2 } from 'lucide-react'
 
 import { ExecutorInfo } from '@/entities/team'
-import { STATUS_LABEL_KEYS, TASK_STATUSES, TaskCard } from '@/entities/task'
+import { TASK_STATUSES } from '@/entities/task'
+import { DraggableTaskCard, DropStatusColumn, TaskStatusDndProvider } from '@/features/task/change-status'
 import { useTranslation } from '@/shared/i18n'
-import { Badge } from '@/shared/ui/badge'
 
 import type { StatusTask, TaskSchema } from '@/entities/task'
 
 type TaskBoardBodyProps = {
-  isFetching: boolean
+  isLoading: boolean
   isError: boolean
   tasksByStatus: Record<StatusTask, TaskSchema[]> | null
   teamId: number
 }
 
-export function TaskBoardBody({ isFetching, isError, tasksByStatus, teamId }: TaskBoardBodyProps) {
+export function TaskBoardBody({ isLoading, isError, tasksByStatus, teamId }: TaskBoardBodyProps) {
   const { t } = useTranslation()
 
-  if (isFetching) {
+  if (isLoading) {
     return (
       <div className="flex justify-center py-16">
         <Loader2 className="text-muted-foreground size-6 animate-spin" />
@@ -42,33 +42,30 @@ export function TaskBoardBody({ isFetching, isError, tasksByStatus, teamId }: Ta
   }
 
   return (
-    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
-      {TASK_STATUSES.map((status) => {
-        const tasks = tasksByStatus[status]
-        return (
-          <section key={status} className="bg-card flex flex-col gap-3 rounded-lg border p-3">
-            <header className="flex items-center justify-between gap-2">
-              <h2 className="text-sm font-medium">{t(STATUS_LABEL_KEYS[status])}</h2>
-              <Badge variant="secondary">{tasks.length}</Badge>
-            </header>
-            <div className="flex flex-col gap-3">
+    <TaskStatusDndProvider teamId={teamId}>
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
+        {TASK_STATUSES.map((status) => {
+          const tasks = tasksByStatus[status]
+          return (
+            <DropStatusColumn key={status} status={status} count={tasks.length} teamId={teamId}>
               {tasks.length === 0 ? (
                 <div className="rounded-md border border-dashed px-3 py-8 text-center">
                   <p className="text-muted-foreground text-xs">{t('task.board.none')}</p>
                 </div>
               ) : (
                 tasks.map((task) => (
-                  <TaskCard
+                  <DraggableTaskCard
                     key={task.id}
+                    teamId={teamId}
                     task={task}
                     executor={(userId) => <ExecutorInfo teamId={teamId} userId={userId} />}
                   />
                 ))
               )}
-            </div>
-          </section>
-        )
-      })}
-    </div>
+            </DropStatusColumn>
+          )
+        })}
+      </div>
+    </TaskStatusDndProvider>
   )
 }

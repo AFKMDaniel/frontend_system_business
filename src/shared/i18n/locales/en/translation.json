@@ -82,6 +82,18 @@
       "closed": "Closed"
     },
     "grade": "Grade",
+    "gradeDialog": {
+      "title": "Grade task",
+      "description": "Set a grade for the completed task.",
+      "gradeLabel": "Grade",
+      "submit": "Close task",
+      "submitting": "Closing...",
+      "errors": {
+        "gradeRequired": "Choose a grade.",
+        "gradeRange": "Grade must be between 1 and 5.",
+        "failed": "Failed to close the task."
+      }
+    },
     "rating": "{{value}} out of 5",
     "due": "Due",
     "board": {
@@ -94,7 +106,8 @@
       "searchExecutor": "Search executor",
       "noExecutors": "No executors found.",
       "me": "me",
-      "apply": "Apply"
+      "apply": "Apply",
+      "moveStatusError": "Failed to change task status."
     }
   },
   "header": {
