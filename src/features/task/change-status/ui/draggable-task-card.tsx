@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react'
 import { useDraggable } from '@dnd-kit/react'
 
-import { DIALOG_IDS, selectDialogContent } from '@/app/dialog'
-import { useAppSelector } from '@/app/providers/store'
+import { selectDialogContent } from '@/shared/model/dialog'
+import { useAppSelector } from '@/shared/lib/redux'
 import { getAllowedStatuses, TaskCard } from '@/entities/task'
 import { userApi, usePrivileged } from '@/entities/user'
 import { cn } from '@/shared/lib/utils'
@@ -29,7 +29,7 @@ export function DraggableTaskCard({ teamId, task, executor }: DraggableTaskCardP
 
   const isHidden = useAppSelector((state) => {
     const content = selectDialogContent(state)
-    return content?.id === DIALOG_IDS.gradeTask && content.props?.taskId === task.id
+    return content?.id === 'grade-task' && content.props?.taskId === task.id
   })
 
   const { ref, isDragging } = useDraggable({

@@ -1,6 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
 
-import type { RootState } from '@/app/providers/store'
 import { userApi } from './api'
 import { login, refreshToken } from './auth-thunks'
 

@@ -1,8 +1,8 @@
 import { yupResolver } from '@hookform/resolvers/yup'
 import { number, object } from 'yup'
 
-import { closeDialog } from '@/app/dialog'
-import { useAppDispatch } from '@/app/providers/store'
+import { closeDialog } from '@/shared/model/dialog'
+import { useAppDispatch } from '@/shared/lib/redux'
 import { taskApi } from '@/entities/task'
 import type { GradeTask } from '@/entities/task'
 import { i18n, useTranslation } from '@/shared/i18n'

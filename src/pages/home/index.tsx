@@ -1,7 +1,7 @@
 import { Loader2, Users } from 'lucide-react'
 
-import { useAppDispatch } from '@/app/providers/store'
-import { DIALOG_IDS, openDialog } from '@/app/dialog'
+import { useAppDispatch } from '@/shared/lib/redux'
+import { openDialog } from '@/shared/model/dialog'
 import { UserInfo, userApi } from '@/entities/user'
 import { TeamListItem } from '@/entities/team'
 import { useTranslation } from '@/shared/i18n'
@@ -13,7 +13,7 @@ export function HomePage() {
   const { data: user, isLoading, isError } = userApi.useGetUserMeQuery()
   const teams = user?.teams ?? []
 
-  const openJoinTeamDialog = () => dispatch(openDialog({ id: DIALOG_IDS.joinTeam }))
+  const openJoinTeamDialog = () => dispatch(openDialog({ id: 'join-team' }))
 
   return (
     <div className="grid grid-cols-1 grid-rows-1 items-start justify-items-center gap-6 lg:grid-cols-[240px_1fr]">

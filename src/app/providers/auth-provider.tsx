@@ -1,9 +1,12 @@
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-import { useAppDispatch, useAppSelector } from '@/app/providers/store'
-import { refreshToken } from '@/entities/user/auth-thunks'
-import { selectAccessToken, selectAuthStatus } from '@/entities/user/auth-slice'
+import { useAppDispatch, useAppSelector } from '@/shared/lib/redux'
+import {
+  refreshToken,
+  selectAccessToken,
+  selectAuthStatus,
+} from '@/entities/user'
 import { ROUTES } from '@/shared/config'
 
 export function AuthProvider() {

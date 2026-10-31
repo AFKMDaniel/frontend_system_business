@@ -1,4 +1,4 @@
-import { rootApi } from '@/app/providers/root-api'
+import { rootApi } from '@/shared/api'
 import { API_ENDPOINTS } from '@/shared/config'
 
 import type { CalendarDaySchema, CalendarParams } from './types'

@@ -1,8 +1,8 @@
 import { yupResolver } from '@hookform/resolvers/yup'
 import { object, string } from 'yup'
 
-import { useAppDispatch } from '@/app/providers/store'
-import { closeDialog } from '@/app/dialog'
+import { useAppDispatch } from '@/shared/lib/redux'
+import { closeDialog } from '@/shared/model/dialog'
 import { userApi } from '@/entities/user'
 import { useFormWithErrorHandling } from '@/shared/lib/use-form-with-error-handling'
 import { i18n, useTranslation } from '@/shared/i18n'

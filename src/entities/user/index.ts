@@ -1,6 +1,7 @@
 export * from './types'
 export * from './api'
 export * from './auth-slice'
+export { default as authReducer } from './auth-slice'
 export * from './auth-thunks'
 export { UserInfo } from './ui/user-info'
 export { useIsAdmin } from './lib/use-is-admin'

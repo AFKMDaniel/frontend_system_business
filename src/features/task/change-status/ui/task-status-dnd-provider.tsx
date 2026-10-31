@@ -5,8 +5,8 @@ import { toast } from 'sonner'
 
 import type { DragEndEvent } from '@dnd-kit/react'
 
-import { DIALOG_IDS, openDialog } from '@/app/dialog'
-import { useAppDispatch } from '@/app/providers/store'
+import { openDialog } from '@/shared/model/dialog'
+import { useAppDispatch } from '@/shared/lib/redux'
 import { getAllowedStatuses, TASK_STATUSES, taskApi } from '@/entities/task'
 import { userApi, usePrivileged } from '@/entities/user'
 import { normalizeApiError } from '@/shared/api/error'
@@ -48,7 +48,7 @@ export function TaskStatusDndProvider({ teamId, children }: TaskStatusDndProvide
     if (!allowed.includes(targetStatus)) return
 
     if (targetStatus === 'closed') {
-      dispatch(openDialog({ id: DIALOG_IDS.gradeTask, props: { teamId, taskId: data.taskId } }))
+      dispatch(openDialog({ id: 'grade-task', props: { teamId, taskId: data.taskId } }))
       return
     }
 

@@ -1,9 +1,5 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
 
-import type { RootState } from '@/app/providers/store'
-
-import type { DialogPayload } from './types'
-
 export type CurrentDialog = DialogPayload | null
 
 type DialogState = {
@@ -34,7 +30,9 @@ const dialogSlice = createSlice({
 })
 
 export const { openDialog, closeDialog, clearDialogContent } = dialogSlice.actions
-export default dialogSlice.reducer
+export const dialogReducer = dialogSlice.reducer
 
-export const selectDialogIsOpen = (state: RootState) => state.dialog.isOpen
-export const selectDialogContent = (state: RootState) => state.dialog.content
+type DialogStateSelector = { dialog: DialogState }
+
+export const selectDialogIsOpen = (state: DialogStateSelector) => state.dialog.isOpen
+export const selectDialogContent = (state: DialogStateSelector) => state.dialog.content

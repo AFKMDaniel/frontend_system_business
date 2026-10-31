@@ -1,6 +1,8 @@
 import { createBrowserRouter, Navigate, Outlet } from 'react-router-dom'
 
 import { Providers } from '@/app/providers'
+import { HomeLayout } from '@/app/layouts/home-layout'
+import { TeamLayout } from '@/app/layouts/team-layout'
 import { ROUTES } from '@/shared/config'
 import { ForbiddenPage } from '@/pages/forbidden'
 import { LoginPage } from '@/pages/login'
@@ -9,8 +11,6 @@ import { HomePage } from '@/pages/home'
 import { TeamMembersPage } from '@/pages/team/members'
 import { TeamMeetingsPage } from '@/pages/team/meetings'
 import { TeamTasksPage } from '@/pages/team/tasks'
-import { TeamLayout } from '@/widgets/team-layout'
-import { HomeLayout } from '@/widgets/home-layout'
 import { AuthGuard, GuestGuard } from './guards'
 
 export const router = createBrowserRouter([

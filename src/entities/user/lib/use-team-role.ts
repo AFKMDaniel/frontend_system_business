@@ -1,5 +1,4 @@
-import type { TeamRole } from '@/entities/team/types'
-import { TEAM_ROLES } from '@/entities/team/types'
+import { TEAM_ROLES, type TeamRole } from '@/entities/team/@x/user'
 
 import { userApi } from '../api'
 

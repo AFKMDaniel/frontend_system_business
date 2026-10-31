@@ -1,4 +1,4 @@
-import type { CurrentTeamSchema, RoleSchema, TeamMemberSchema } from '@/entities/user/types'
+import type { CurrentTeamSchema, RoleSchema, TeamMemberSchema } from '@/entities/user/@x/admin'
 
 export interface AdminScheme {
   id: number

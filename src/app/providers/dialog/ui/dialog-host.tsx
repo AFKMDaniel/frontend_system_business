@@ -1,12 +1,16 @@
 import { createElement } from 'react'
 import type { AnimationEvent, ReactNode } from 'react'
 
-import { useAppDispatch, useAppSelector } from '@/app/providers/store'
+import { useAppDispatch, useAppSelector } from '@/shared/lib/redux'
+import {
+  clearDialogContent,
+  closeDialog,
+  selectDialogContent,
+  selectDialogIsOpen,
+} from '@/shared/model/dialog'
 import { Dialog, DialogContent } from '@/shared/ui/dialog'
 
 import { dialogRegistry } from '../model'
-import { clearDialogContent, closeDialog, selectDialogContent, selectDialogIsOpen } from '../slice'
-import type { DialogId, DialogPropsMap } from '../types'
 
 function renderDialog<K extends DialogId>(id: K, props?: DialogPropsMap[K]): ReactNode {
   const Content = dialogRegistry[id]

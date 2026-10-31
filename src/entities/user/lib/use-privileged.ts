@@ -1,4 +1,4 @@
-import { TEAM_ROLES } from '@/entities/team/types'
+import { TEAM_ROLES } from '@/entities/team/@x/user'
 
 import { useIsAdmin } from './use-is-admin'
 import { useTeamRole } from './use-team-role'

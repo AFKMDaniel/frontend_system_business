@@ -1,6 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 
-import { rootApi } from '@/app/providers/root-api'
+import { rootApi } from '@/shared/api'
 import { API_ENDPOINTS, API_URL } from '@/shared/config'
 import { parseResponseError, type ApiError } from '@/shared/api/error'
 

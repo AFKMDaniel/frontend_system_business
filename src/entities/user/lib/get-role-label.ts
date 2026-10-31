@@ -1,7 +1,7 @@
 import type { TFunction } from 'i18next'
 
 import { APP_ROLES } from '../types'
-import { TEAM_ROLES } from '@/entities/team/types'
+import { TEAM_ROLES } from '@/entities/team/@x/user'
 
 export const ALL_ROLES = { ...APP_ROLES, ...TEAM_ROLES } as const
 

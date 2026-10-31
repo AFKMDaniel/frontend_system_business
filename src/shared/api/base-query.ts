@@ -5,10 +5,16 @@ import {
   type FetchArgs,
   type FetchBaseQueryMeta,
 } from '@reduxjs/toolkit/query/react'
+
 import { API_ENDPOINTS, API_URL } from '@/shared/config'
-import { refreshToken } from '@/entities/user/auth-thunks'
-import { normalizeApiError, type ApiError } from '@/shared/api/error'
-import type { RootState } from '@/app/providers/store'
+
+import { normalizeApiError, type ApiError } from './error'
+
+type RefreshTokenThunk = () => { unwrap: () => Promise<unknown> }
+
+type ReauthExtra = {
+  refreshToken?: RefreshTokenThunk
+}
 
 const baseQuery = fetchBaseQuery({
   baseUrl: API_URL,
@@ -23,9 +29,12 @@ const baseQuery = fetchBaseQuery({
 
 let refreshPromise: Promise<boolean> | null = null
 
-async function refreshTokens(dispatch: BaseQueryApi['dispatch']): Promise<boolean> {
+async function refreshTokens(api: BaseQueryApi): Promise<boolean> {
+  const extra = api.extra as ReauthExtra
+  if (!extra.refreshToken) return false
+
   try {
-    await dispatch(refreshToken()).unwrap()
+    await api.dispatch(extra.refreshToken()).unwrap()
     return true
   } catch {
     return false
@@ -51,7 +60,7 @@ export const baseQueryWithReauth: BaseQueryFn<
       url !== API_ENDPOINTS.auth.refresh
     ) {
       if (!refreshPromise) {
-        refreshPromise = refreshTokens(api.dispatch).finally(() => {
+        refreshPromise = refreshTokens(api).finally(() => {
           refreshPromise = null
         })
       }
