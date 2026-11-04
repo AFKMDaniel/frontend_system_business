@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import { DragDropProvider } from '@dnd-kit/react'
-import type { FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
+import { Feedback } from '@dnd-kit/dom'
 import { toast } from 'sonner'
 
 import type { DragEndEvent } from '@dnd-kit/react'
@@ -9,7 +9,7 @@ import { openDialog } from '@/shared/model/dialog'
 import { useAppDispatch } from '@/shared/lib/redux'
 import { getAllowedStatuses, TASK_STATUSES, taskApi } from '@/entities/task'
 import { userApi, usePrivileged } from '@/entities/user'
-import { normalizeApiError } from '@/shared/api/error'
+import { type ApiError } from '@/shared/api/error'
 import { useTranslation } from '@/shared/i18n'
 
 import type { StatusTask } from '@/entities/task'
@@ -48,20 +48,37 @@ export function TaskStatusDndProvider({ teamId, children }: TaskStatusDndProvide
     if (!allowed.includes(targetStatus)) return
 
     if (targetStatus === 'closed') {
-      dispatch(openDialog({ id: 'grade-task', props: { teamId, taskId: data.taskId } }))
+      const patch = dispatch(
+        taskApi.util.updateQueryData('getTasks', { teamId }, (draft) => {
+          const task = draft.entities[data.taskId]
+          if (task) task.status = targetStatus
+        }),
+      )
+      dispatch(
+        openDialog({
+          id: 'grade-task',
+          props: { teamId, taskId: data.taskId },
+          onClose: () => {
+            patch?.undo()
+          },
+        }),
+      )
       return
     }
 
     updateTaskStatus({ teamId, taskId: data.taskId, body: { status: targetStatus } })
       .unwrap()
-      .catch((error: unknown) => {
-        const parsed =
-          typeof error === 'object' && error !== null && 'status' in error
-            ? normalizeApiError(error as FetchBaseQueryError)
-            : null
-        toast.error(parsed?.message || t('task.board.moveStatusError'))
+      .catch((error: ApiError) => {
+        toast.error(error.message || t('task.board.moveStatusError'))
       })
   }
 
-  return <DragDropProvider onDragEnd={handleDragEnd}>{children}</DragDropProvider>
+  return (
+    <DragDropProvider
+      plugins={(defaults) => [...defaults, Feedback.configure({ dropAnimation: null })]}
+      onDragEnd={handleDragEnd}
+    >
+      {children}
+    </DragDropProvider>
+  )
 }

@@ -26,6 +26,9 @@ export const taskApi = rootApi.injectEndpoints({
       }),
       transformResponse: (response: TaskSchema[]) =>
         taskAdapter.setAll(taskAdapter.getInitialState(), response),
+      serializeQueryArgs: ({ queryArgs }) => queryArgs.teamId,
+      forceRefetch: ({ currentArg, previousArg }) =>
+        JSON.stringify(currentArg) !== JSON.stringify(previousArg),
       providesTags: ['Task'],
     }),
     getTaskById: builder.query<TaskSchema, { teamId: number; taskId: number }>({
@@ -71,46 +74,20 @@ export const taskApi = rootApi.injectEndpoints({
         body,
       }),
       invalidatesTags: ['Task'],
-      async onQueryStarted({ teamId, taskId, body }, { dispatch, getState, queryFulfilled }) {
-        const nextStatus = body.status
-        if (nextStatus == null) return
+      async onQueryStarted({ teamId, taskId, body }, { dispatch, queryFulfilled }) {
+        if (!body.status) return
 
-        const cacheEntries = taskApi.util.selectInvalidatedBy(getState() as RootState, [
-          { type: 'Task' },
-        ])
-        const patches = cacheEntries
-          .filter((entry) => entry.originalArgs.teamId === teamId)
-          .map(({ endpointName, originalArgs }) => {
-            if (endpointName === 'getTasks') {
-              return dispatch(
-                taskApi.util.updateQueryData(
-                  'getTasks',
-                  originalArgs as { teamId: number; params?: TaskListParams },
-                  (draft) => {
-                    const task = draft.entities[taskId]
-                    if (task) task.status = nextStatus
-                  },
-                ),
-              )
-            }
-            if (endpointName === 'getTaskById' && originalArgs.taskId === taskId) {
-              return dispatch(
-                taskApi.util.updateQueryData(
-                  'getTaskById',
-                  originalArgs as { teamId: number; taskId: number },
-                  (draft) => {
-                    draft.status = nextStatus
-                  },
-                ),
-              )
-            }
-            return null
-          })
+        const patch = dispatch(
+          taskApi.util.updateQueryData('getTasks', { teamId }, (draft) => {
+            const task = draft.entities[taskId]
+            if (task) task.status = body.status!
+          }),
+        )
 
         try {
           await queryFulfilled
         } catch {
-          patches.forEach((patch) => patch?.undo())
+          patch?.undo()
         }
       },
     }),

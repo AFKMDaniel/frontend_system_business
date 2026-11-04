@@ -32,7 +32,10 @@ export function DialogHost() {
     <Dialog
       open={isOpen}
       onOpenChange={(open) => {
-        if (!open) dispatch(closeDialog())
+        if (!open) {
+          dispatch(closeDialog())
+          content?.onClose?.()
+        }
       }}
     >
       <DialogContent onAnimationEnd={handleAnimationEnd}>

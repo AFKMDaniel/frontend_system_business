@@ -15,7 +15,7 @@ declare global {
   type DialogId = keyof DialogPropsMap
 
   type DialogPayload = {
-    [K in DialogId]: { id: K; props?: DialogPropsMap[K] }
+    [K in DialogId]: { id: K; props?: DialogPropsMap[K]; onClose?: () => void }
   }[DialogId]
 
   type DialogRegistry = {

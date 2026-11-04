@@ -1,8 +1,6 @@
 import type { ReactNode } from 'react'
 import { useDraggable } from '@dnd-kit/react'
 
-import { selectDialogContent } from '@/shared/model/dialog'
-import { useAppSelector } from '@/shared/lib/redux'
 import { getAllowedStatuses, TaskCard } from '@/entities/task'
 import { userApi, usePrivileged } from '@/entities/user'
 import { cn } from '@/shared/lib/utils'
@@ -27,11 +25,6 @@ export function DraggableTaskCard({ teamId, task, executor }: DraggableTaskCardP
       { isPrivileged, isExecutor },
     ).length > 0
 
-  const isHidden = useAppSelector((state) => {
-    const content = selectDialogContent(state)
-    return content?.id === 'grade-task' && content.props?.taskId === task.id
-  })
-
   const { ref, isDragging } = useDraggable({
     id: task.id,
     data: { taskId: task.id, status: task.status, executorUserId: task.executor_user_id },
@@ -41,7 +34,7 @@ export function DraggableTaskCard({ teamId, task, executor }: DraggableTaskCardP
   return (
     <div
       ref={ref}
-      className={cn(isMovable && 'cursor-grab', isDragging && 'opacity-60', isHidden && 'opacity-0')}
+      className={cn(isMovable && 'cursor-grab', isDragging && 'opacity-60')}
     >
       <TaskCard task={task} executor={executor} />
     </div>
