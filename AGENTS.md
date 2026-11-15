@@ -24,12 +24,12 @@ Frontend for a business-management system (teams, tasks, meetings, calendar, com
 
 Directories under `src/` (some still scaffolding):
 
-- `app/` — app initialization and composition root: providers (store + thunk extra args, dialog registry + host), layouts (`home-layout`, `team-layout`), router
-- `pages/` — page compositions (login, teams, task, meeting, calendar)
-- `widgets/` — composite UI blocks (sidebar, header, task-list, calendar-view)
-- `features/` — user scenarios (auth/login, create-task, join-team, comment-form, meeting-form)
-- `entities/` — domain models + API clients (user, team, task, meeting, comment)
-- `shared/` — reuse across layers: `api/` (root API + base query), `config/`, `lib/` (utils), `model/` (dialog state), `types/`, `ui/`
+- `app/` — app initialization and composition root: providers (store + thunk extra args, dialog registry + host, auth-provider), layouts (`home-layout`, `team-layout`), router
+- `pages/` — page compositions (home, login, register, forbidden, team/{tasks, meetings, members})
+- `widgets/` — composite UI blocks (layout: page header; task-board: team task board)
+- `features/` — user scenarios (auth/login, auth/register, team/join-team, task/change-status, task/grade-task, language, theme)
+- `entities/` — domain models + API clients (user, team, task, meeting, comment, calendar, admin)
+- `shared/` — reuse across layers: `api/` (root API + base query + error normalization), `config/`, `lib/`, `model/` (dialog state), `i18n/`, `ui/`
 
 ### Layering rules
 
@@ -43,7 +43,7 @@ Directories under `src/` (some still scaffolding):
 
 - **Redux Toolkit + RTK Query** is the single data-fetching/state layer (no custom fetch client).
 - Root API: `shared/api/root-api.ts` (`createApi`, empty endpoints for now). Reauth (401 → refresh → retry) lives in `shared/api/base-query.ts`, which reads the `refreshToken` thunk from the thunk `extraArgument` passed in `app/providers/store/index.ts`. Access token lives only in Redux memory (`entities/user/auth-slice.ts`, no localStorage persistence) — a page reload logs the user out.
-- Per-entity endpoint slices are added with `rootApi.injectEndpoints(...)` under `entities/<domain>/api.ts` (importing `rootApi` from `@/shared/api`), with `tagTypes: ['User','Team','Task','Meeting','Comment']` for cross-entity cache invalidation. Auth thunks (`login`, `register`, `refreshToken`) live in `entities/user/auth-thunks.ts`; `logout` is an RTK Query mutation on `userApi` (`userApi.useLogoutMutation`), and its fulfilled matcher clears the access token in `auth-slice.ts`.
+- Per-entity endpoint slices are added with `rootApi.injectEndpoints(...)` under `entities/<domain>/api.ts` (importing `rootApi` from `@/shared/api`). Tag types (`User`, `Team`, `Task`, `Meeting`, `Comment`, `Calendar`) are declared once in `shared/api/root-api.ts` (`TAG_TYPES`) — use those strings for `providesTags`/`invalidatesTags`. Auth thunks (`login`, `register`, `refreshToken`) live in `entities/user/auth-thunks.ts`; `logout` is an RTK Query mutation on `userApi` (`userApi.useLogoutMutation`), and its fulfilled matcher clears the access token in `auth-slice.ts`.
 - Store lives in `app/providers/store/index.ts`; the Redux Provider wrapper is `app/providers/index.tsx`. `RootState`/`AppDispatch` are declared as global types in `app/providers/store/types.d.ts`, and typed hooks (`useAppDispatch`/`useAppSelector`) live in `shared/lib/redux.ts`.
 
 ## Dialogs
@@ -66,7 +66,7 @@ Directories under `src/` (some still scaffolding):
 
 ## Forms (react-hook-form)
 
-- **react-hook-form** is the form library (`useForm`, `useController`). Bind controls through the wrappers in `src/shared/ui/form/`: `form-input.tsx` (`FormInput`), `form-combobox.tsx` (`FormCombobox`), `form-date-picker.tsx` (`FormDatePicker`). Prefer these over raw RHF binding.
+- **react-hook-form** is the form library (`useForm`, `useController`). Bind controls through the wrappers in `src/shared/ui/form/`: `form-input.tsx` (`FormInput`), `form-combobox.tsx` (`FormCombobox`), `form-date-picker.tsx` (`FormDatePicker`), `form-rating.tsx` (`FormRating`). Prefer these over raw RHF binding.
 - The wrappers use `useController({ control, name })` (not the `<Controller>` component) and are generic over `TFieldValues`/`TName`; `FormCombobox` is additionally generic over the option type `TOption` and stores the selected option object in the form field.
 - `FormInput` renders `Field`/`FieldLabel`/`FieldError`; `FormCombobox`/`FormDatePicker` render only the bound control — supply labels with `FilterGroup` or `Field`/`FieldLabel`.
 - Pick the hook per form: plain `useForm` for local/transient forms (e.g. the task filter); `useFormWithErrorHandling` from `@/shared/lib/use-form-with-error-handling` for forms that submit to the server (adds field-level server errors + toast fallback).
