@@ -1,7 +1,7 @@
 import { Outlet } from 'react-router-dom'
 
 import { useTranslation } from '@/shared/i18n'
-import { Layout } from '@/widgets/layout'
+import { Layout } from '@/app/layouts/layout'
 
 export function HomeLayout() {
   const { t } = useTranslation()

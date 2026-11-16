@@ -28,6 +28,7 @@
       "confirmPasswordLabel": "Confirm password",
       "submit": "Create account",
       "submitting": "Creating account…",
+      "success": "Account created successfully",
       "errors": {
         "email": "Enter a valid email",
         "emailRequired": "Email is required",
@@ -108,7 +109,58 @@
       "me": "me",
       "apply": "Apply",
       "moveStatusError": "Failed to change task status."
+    },
+    "backToBoard": "Back to board",
+    "details": {
+      "loadError": "Failed to load the task.",
+      "title": "Details",
+      "status": "Status",
+      "assignee": "Assignee",
+      "deadline": "Deadline",
+      "closed": "Closed",
+      "grade": "Grade",
+      "changeStatusError": "Failed to change task status.",
+      "changeAssigneeError": "Failed to update the assignee.",
+      "changeDeadlineError": "Failed to update the deadline."
+    },
+    "description": {
+      "title": "Description",
+      "empty": "No description yet.",
+      "placeholder": "Add a description…"
+    },
+    "edit": {
+      "edit": "Edit task",
+      "titleLabel": "Title",
+      "titlePlaceholder": "Task title",
+      "save": "Save",
+      "saving": "Saving…",
+      "cancel": "Cancel",
+      "errors": {
+        "titleRequired": "Title is required.",
+        "failed": "Failed to save the task."
+      }
     }
+  },
+  "richText": {
+    "bold": "Bold",
+    "italic": "Italic",
+    "underline": "Underline",
+    "strike": "Strikethrough",
+    "code": "Inline code",
+    "heading": "Heading",
+    "bulletList": "Bullet list",
+    "orderedList": "Numbered list",
+    "blockquote": "Quote",
+    "codeBlock": "Code block",
+    "link": "Link",
+    "linkTitle": "Link",
+    "linkDescription": "Enter the URL for this link.",
+    "linkUrlLabel": "URL",
+    "linkApply": "Apply",
+    "linkRemove": "Remove link",
+    "linkCancel": "Cancel",
+    "undo": "Undo",
+    "redo": "Redo"
   },
   "header": {
     "joinTeam": "Join team",

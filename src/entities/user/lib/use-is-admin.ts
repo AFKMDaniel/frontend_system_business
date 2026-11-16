@@ -1,5 +1,5 @@
-import { APP_ROLES } from '../types'
-import { userApi } from '../api'
+import { APP_ROLES } from '../model/user'
+import { userApi } from '../api/user'
 
 export function useIsAdmin(): boolean {
   const { data: user } = userApi.useGetUserMeQuery()

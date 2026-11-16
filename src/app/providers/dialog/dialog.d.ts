@@ -5,11 +5,13 @@ import type { FunctionComponent } from 'react'
 
 import type { GradeTaskDialogProps } from '@/features/task/grade-task'
 import type { JoinTeamDialogProps } from '@/features/team/join-team'
+import type { RichTextLinkDialogProps } from '@/shared/ui/rich-text-link-dialog'
 
 declare global {
   type DialogPropsMap = {
     'join-team': JoinTeamDialogProps
     'grade-task': GradeTaskDialogProps
+    'rich-text-link': RichTextLinkDialogProps
   }
 
   type DialogId = keyof DialogPropsMap

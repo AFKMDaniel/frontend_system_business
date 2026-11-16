@@ -5,23 +5,27 @@ import { toast } from 'sonner'
 
 import type { DragEndEvent } from '@dnd-kit/react'
 
-import { openDialog } from '@/shared/model/dialog'
 import { useAppDispatch } from '@/shared/lib/redux'
 import { getAllowedStatuses, TASK_STATUSES, taskApi } from '@/entities/task'
 import { userApi, usePrivileged } from '@/entities/user'
-import { type ApiError } from '@/shared/api/error'
+import { type ApiError } from '@/shared/api'
 import { useTranslation } from '@/shared/i18n'
 
 import type { StatusTask } from '@/entities/task'
 
-import type { TaskDragData } from '../types'
+import type { TaskCloseRequest, TaskDragData } from '../model/task-drag'
 
 type TaskStatusDndProviderProps = {
   teamId: number
   children: ReactNode
+  onTaskCloseRequest: (request: TaskCloseRequest) => void
 }
 
-export function TaskStatusDndProvider({ teamId, children }: TaskStatusDndProviderProps) {
+export function TaskStatusDndProvider({
+  teamId,
+  children,
+  onTaskCloseRequest,
+}: TaskStatusDndProviderProps) {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const isPrivileged = usePrivileged(teamId)
@@ -54,15 +58,7 @@ export function TaskStatusDndProvider({ teamId, children }: TaskStatusDndProvide
           if (task) task.status = targetStatus
         }),
       )
-      dispatch(
-        openDialog({
-          id: 'grade-task',
-          props: { teamId, taskId: data.taskId },
-          onClose: () => {
-            patch?.undo()
-          },
-        }),
-      )
+      onTaskCloseRequest({ teamId, taskId: data.taskId, undo: () => patch?.undo() })
       return
     }
 

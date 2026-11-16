@@ -6,7 +6,7 @@
 
 import { createEntityAdapter } from '@reduxjs/toolkit'
 
-import type { TeamMemberResponseSchema } from '../types'
+import type { TeamMemberResponseSchema } from '../model/team'
 
 export const teamMemberAdapter = createEntityAdapter<TeamMemberResponseSchema, number>({
   selectId: (member) => member.user.id,

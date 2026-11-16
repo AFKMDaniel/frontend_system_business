@@ -14,31 +14,40 @@ export function getAllowedStatuses(
   data: TaskDragData,
   access: TaskDragAccess,
 ): StatusTask[] {
+  const allowed: StatusTask[] = []
+
   if (access.isPrivileged) {
     switch (data.status) {
       case 'open':
-        return data.executorUserId != null ? ['work', 'closed'] : ['closed']
+        allowed.push(...(data.executorUserId != null ? (['work', 'closed'] as const) : (['closed'] as const)))
+        break
       case 'work':
-        return ['open', 'closed']
+        allowed.push('open', 'closed')
+        break
       case 'review':
-        return ['work', 'closed']
+        allowed.push('work', 'closed')
+        break
       case 'closed':
-        return ['open', 'work']
+        allowed.push('open', 'work')
+        break
     }
   }
 
   if (access.isExecutor) {
     switch (data.status) {
       case 'open':
-        return ['work']
+        allowed.push('work')
+        break
       case 'work':
-        return ['open', 'review']
+        allowed.push('open', 'review')
+        break
       case 'review':
-        return ['work']
+        allowed.push('work')
+        break
       case 'closed':
-        return []
+        break
     }
   }
 
-  return []
+  return [...new Set(allowed)]
 }

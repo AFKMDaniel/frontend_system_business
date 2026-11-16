@@ -1,6 +1,6 @@
-import { TEAM_ROLES, type TeamRole } from '@/entities/team/@x/user'
+import { TEAM_ROLES, type TeamRole } from '@/shared/config'
 
-import { userApi } from '../api'
+import { userApi } from '../api/user'
 
 export function useTeamRole(teamId: number | string): TeamRole | null {
   const { data: user } = userApi.useGetUserMeQuery()

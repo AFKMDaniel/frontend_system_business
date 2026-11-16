@@ -12,9 +12,9 @@ import { DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/sh
 import { Field, FieldError, FieldLabel } from '@/shared/ui/field'
 import { FormRating } from '@/shared/ui/form/form-rating'
 
-import type { GradeTaskDialogProps } from './types'
+import type { GradeTaskDialogProps } from './model/grade-task'
 
-export type { GradeTaskDialogProps } from './types'
+export type { GradeTaskDialogProps } from './model/grade-task'
 
 const gradeSchema = object({
   grade: number()

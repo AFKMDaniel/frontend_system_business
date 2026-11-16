@@ -1,1 +1,1 @@
-export type { CurrentTeamSchema, RoleSchema, TeamMemberSchema } from '../types'
+export type { RoleSchema, TeamMemberSchema } from '../model/user'

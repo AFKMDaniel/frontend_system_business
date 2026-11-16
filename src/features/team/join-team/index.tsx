@@ -10,7 +10,7 @@ import { Button } from '@/shared/ui/button'
 import { DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/shared/ui/dialog'
 import { FormInput } from '@/shared/ui/form/form-input'
 
-export type { JoinTeamDialogProps } from './types'
+export type { JoinTeamDialogProps } from './model/join-team'
 
 const joinTeamSchema = object({
   inviteCode: string()

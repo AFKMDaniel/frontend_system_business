@@ -3,9 +3,10 @@ import { Loader2, Users } from 'lucide-react'
 import { useAppDispatch } from '@/shared/lib/redux'
 import { openDialog } from '@/shared/model/dialog'
 import { UserInfo, userApi } from '@/entities/user'
-import { TeamListItem } from '@/entities/team'
 import { useTranslation } from '@/shared/i18n'
 import { Button } from '@/shared/ui/button'
+
+import { TeamListItem } from './ui/team-list-item'
 
 export function HomePage() {
   const dispatch = useAppDispatch()

@@ -1,16 +1,17 @@
 import type { ReactNode } from 'react'
 import { CalendarDays } from 'lucide-react'
+import { generatePath, Link } from 'react-router-dom'
 
 import { cn } from '@/shared/lib/utils'
-import { formatDate } from '@/shared/i18n/lib/format-date'
-import { useTranslation } from '@/shared/i18n'
+import { formatDate, useTranslation } from '@/shared/i18n'
+import { ROUTES } from '@/shared/config'
 import { Badge } from '@/shared/ui/badge'
 import { Card, CardContent, CardHeader } from '@/shared/ui/card'
 import { Rating } from '@/shared/ui/rating'
 
 import { STATUS_LABEL_KEYS } from '../lib/status'
 
-import type { TaskSchema } from '../types'
+import type { TaskSchema } from '../model/task'
 import type { StatusTask } from '../lib/status'
 
 type StatusMeta = {
@@ -67,7 +68,15 @@ export function TaskCard({ task, executor }: TaskCardProps) {
         </div>
       </CardHeader>
       <CardContent className="flex flex-col gap-3">
-        <p className="line-clamp-2 text-sm">{task.description}</p>
+        <Link
+          to={generatePath(ROUTES.teamTask, {
+            teamId: String(task.team_id),
+            taskId: String(task.id),
+          })}
+          className="hover:underline"
+        >
+          <p className="line-clamp-2 text-sm">{task.title}</p>
+        </Link>
         <div className="flex items-center justify-between gap-2">
           <span className="text-muted-foreground flex min-w-0 items-center gap-1.5 text-xs">
             <CalendarDays className="size-3.5 shrink-0" />

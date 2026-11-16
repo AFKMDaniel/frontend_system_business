@@ -1,5 +1,5 @@
-export * from './types'
-export * from './api'
+export * from './model/task'
+export * from './api/task'
 export { TaskCard } from './ui/task-card'
 export * from './lib/status'
 export * from './lib/status-transitions'

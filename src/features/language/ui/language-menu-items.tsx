@@ -1,5 +1,4 @@
-import { SUPPORTED_LANGUAGES } from '@/shared/i18n/languages'
-import { useTranslation } from '@/shared/i18n'
+import { SUPPORTED_LANGUAGES, useTranslation } from '@/shared/i18n'
 import {
   DropdownMenuLabel,
   DropdownMenuRadioGroup,

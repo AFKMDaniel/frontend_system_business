@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { object, ref, string } from 'yup'
 
+import { toast } from 'sonner'
+
 import { useAppDispatch } from '@/shared/lib/redux'
 import { register } from '@/entities/user'
 import { useFormWithErrorHandling } from '@/shared/lib/use-form-with-error-handling'
@@ -61,6 +63,7 @@ export function RegisterForm() {
 
   const onSubmit = handleSubmit(async ({ email, password }) => {
     await dispatch(register({ email, password })).unwrap()
+    toast.success(t('auth.register.success'))
     navigate(ROUTES.login)
   })
 

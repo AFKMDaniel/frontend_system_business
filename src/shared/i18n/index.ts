@@ -31,4 +31,6 @@ i18n
 
 export default i18n
 export { i18n, useTranslation }
+export { formatDate } from './lib/format-date'
 export { getDateLocale } from './lib/date-locale'
+export { SUPPORTED_LANGUAGES, type LanguageCode } from './languages'

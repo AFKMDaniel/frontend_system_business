@@ -9,7 +9,7 @@ import { Badge } from '@/shared/ui/badge'
 
 import type { StatusTask } from '@/entities/task'
 
-import type { TaskDragData } from '../types'
+import type { TaskDragData } from '../model/task-drag'
 
 type DropStatusColumnProps = {
   status: StatusTask

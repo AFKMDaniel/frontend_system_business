@@ -4,7 +4,7 @@ import { Outlet, generatePath, useParams } from 'react-router-dom'
 import { teamApi } from '@/entities/team'
 import { ROUTES } from '@/shared/config'
 import { useTranslation } from '@/shared/i18n'
-import { Layout } from '@/widgets/layout'
+import { Layout } from '@/app/layouts/layout'
 
 export function TeamLayout() {
   const { teamId } = useParams<'teamId'>()

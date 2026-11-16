@@ -11,19 +11,23 @@ interface FormInputProps<
   control: Control<TFieldValues>
   name: TName
   label: string
+  labelClassName?: string
 }
 
 function FormInput<TFieldValues extends FieldValues, TName extends FieldPath<TFieldValues>>({
   control,
   name,
   label,
+  labelClassName,
   ...inputProps
 }: FormInputProps<TFieldValues, TName>) {
   const { field, fieldState } = useController({ control, name })
 
   return (
     <Field data-invalid={fieldState.invalid}>
-      <FieldLabel htmlFor={name}>{label}</FieldLabel>
+      <FieldLabel htmlFor={name} className={labelClassName}>
+        {label}
+      </FieldLabel>
       <Input id={name} aria-invalid={fieldState.invalid} {...inputProps} {...field} />
       <FieldError errors={fieldState.error ? [fieldState.error] : []} />
     </Field>

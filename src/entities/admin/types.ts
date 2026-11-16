@@ -1,10 +1,9 @@
-import type { CurrentTeamSchema, RoleSchema, TeamMemberSchema } from '@/entities/user/@x/admin'
+import type { RoleSchema, TeamMemberSchema } from '@/entities/user/@x/admin'
 
 export interface AdminScheme {
   id: number
   email: string
   roles: RoleSchema[]
-  current_team: CurrentTeamSchema | null
   team_memberships: TeamMemberSchema[]
 }
 

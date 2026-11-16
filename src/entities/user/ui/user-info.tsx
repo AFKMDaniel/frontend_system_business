@@ -4,7 +4,7 @@ import { useTranslation } from '@/shared/i18n'
 import { Avatar, AvatarFallback } from '@/shared/ui/avatar'
 
 import { getRoleLabel } from '../lib/get-role-label'
-import { userApi } from '../api'
+import { userApi } from '../api/user'
 
 export function UserInfo() {
   const { t } = useTranslation()

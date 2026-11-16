@@ -1,6 +1,6 @@
 import { createEntityAdapter, createSelector } from '@reduxjs/toolkit'
 
-import type { TaskSchema } from '../types'
+import type { TaskSchema } from '../model/task'
 import type { StatusTask } from './status'
 
 export const taskAdapter = createEntityAdapter<TaskSchema>({

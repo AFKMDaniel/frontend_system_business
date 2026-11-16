@@ -28,6 +28,7 @@
       "confirmPasswordLabel": "Подтвердите пароль",
       "submit": "Создать аккаунт",
       "submitting": "Создание аккаунта…",
+      "success": "Аккаунт успешно создан",
       "errors": {
         "email": "Введите корректный адрес электронной почты",
         "emailRequired": "Электронная почта обязательна",
@@ -108,7 +109,58 @@
       "me": "я",
       "apply": "Применить",
       "moveStatusError": "Не удалось изменить статус задачи."
+    },
+    "backToBoard": "К списку задач",
+    "details": {
+      "loadError": "Не удалось загрузить задачу.",
+      "title": "Подробности",
+      "status": "Статус",
+      "assignee": "Исполнитель",
+      "deadline": "Срок",
+      "closed": "Закрыта",
+      "grade": "Оценка",
+      "changeStatusError": "Не удалось изменить статус задачи.",
+      "changeAssigneeError": "Не удалось обновить исполнителя.",
+      "changeDeadlineError": "Не удалось обновить срок."
+    },
+    "description": {
+      "title": "Описание",
+      "empty": "Описание пока не добавлено.",
+      "placeholder": "Добавьте описание…"
+    },
+    "edit": {
+      "edit": "Редактировать задачу",
+      "titleLabel": "Название",
+      "titlePlaceholder": "Название задачи",
+      "save": "Сохранить",
+      "saving": "Сохранение…",
+      "cancel": "Отмена",
+      "errors": {
+        "titleRequired": "Введите название.",
+        "failed": "Не удалось сохранить задачу."
+      }
     }
+  },
+  "richText": {
+    "bold": "Полужирный",
+    "italic": "Курсив",
+    "underline": "Подчёркнутый",
+    "strike": "Зачёркнутый",
+    "code": "Код",
+    "heading": "Заголовок",
+    "bulletList": "Маркированный список",
+    "orderedList": "Нумерованный список",
+    "blockquote": "Цитата",
+    "codeBlock": "Блок кода",
+    "link": "Ссылка",
+    "linkTitle": "Ссылка",
+    "linkDescription": "Введите URL ссылки.",
+    "linkUrlLabel": "URL",
+    "linkApply": "Применить",
+    "linkRemove": "Удалить ссылку",
+    "linkCancel": "Отмена",
+    "undo": "Отменить",
+    "redo": "Повторить"
   },
   "header": {
     "joinTeam": "Присоединиться",

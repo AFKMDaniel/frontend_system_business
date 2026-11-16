@@ -11,7 +11,7 @@ import type {
 } from 'react-hook-form'
 import { toast } from 'sonner'
 
-import { isValidationError } from '@/shared/api/error'
+import { isValidationError } from '@/shared/api'
 import { i18n } from '@/shared/i18n'
 
 interface UseFormWithErrorHandlingOptions<

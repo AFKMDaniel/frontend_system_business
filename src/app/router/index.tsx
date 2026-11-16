@@ -11,6 +11,7 @@ import { HomePage } from '@/pages/home'
 import { TeamMembersPage } from '@/pages/team/members'
 import { TeamMeetingsPage } from '@/pages/team/meetings'
 import { TeamTasksPage } from '@/pages/team/tasks'
+import { TeamTaskPage } from '@/pages/team/task'
 import { AuthGuard, GuestGuard } from './guards'
 
 export const router = createBrowserRouter([
@@ -55,6 +56,7 @@ export const router = createBrowserRouter([
         ),
         children: [
           { index: true, element: <TeamTasksPage /> },
+          { path: ROUTES.teamTask, element: <TeamTaskPage /> },
           { path: ROUTES.teamMembers, element: <TeamMembersPage /> },
           { path: ROUTES.teamMeetings, element: <TeamMeetingsPage /> },
         ],

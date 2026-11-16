@@ -4,7 +4,7 @@ import { useTranslation } from '@/shared/i18n'
 import { Avatar, AvatarFallback } from '@/shared/ui/avatar'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/shared/ui/tooltip'
 
-import { teamApi } from '../api'
+import { teamApi } from '../api/team'
 import { selectMemberByUserId } from '../lib/member-adapter'
 
 // TODO: ask backend to return the executor email in the task response,
