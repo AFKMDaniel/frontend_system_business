@@ -76,12 +76,6 @@
     "avgGradeError": "Failed to load average grade."
   },
   "task": {
-    "status": {
-      "open": "Open",
-      "work": "In progress",
-      "review": "In review",
-      "closed": "Closed"
-    },
     "grade": "Grade",
     "gradeDialog": {
       "title": "Grade task",
@@ -108,18 +102,18 @@
       "noExecutors": "No executors found.",
       "me": "me",
       "apply": "Apply",
-      "moveStatusError": "Failed to change task status."
+      "moveStageError": "Failed to change task stage."
     },
     "backToBoard": "Back to board",
     "details": {
       "loadError": "Failed to load the task.",
       "title": "Details",
-      "status": "Status",
+      "stage": "Stage",
       "assignee": "Assignee",
       "deadline": "Deadline",
       "closed": "Closed",
       "grade": "Grade",
-      "changeStatusError": "Failed to change task status.",
+      "changeStageError": "Failed to change task stage.",
       "changeAssigneeError": "Failed to update the assignee.",
       "changeDeadlineError": "Failed to update the deadline."
     },

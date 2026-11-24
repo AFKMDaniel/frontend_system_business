@@ -1,4 +1,4 @@
-import type { StatusTask } from '../lib/status'
+import type { StageSchema } from './stage'
 
 export type GradeTask = 1 | 2 | 3 | 4 | 5
 
@@ -14,7 +14,7 @@ export interface TaskSchema {
   executor?: ExecutorSchema | null
   title: string
   description: string
-  status: StatusTask
+  stage: StageSchema
   deadline: string
   grade: GradeTask | null
   close_date: string | null
@@ -24,7 +24,6 @@ export interface TaskCreateSchema {
   executor_user_id?: number | null
   title: string
   description: string
-  status: StatusTask
   deadline: string
 }
 
@@ -38,8 +37,8 @@ export interface UpdateTaskExecutorSchema {
   executor_user_id?: number | null
 }
 
-export interface UpdateTaskStatusSchema {
-  status?: StatusTask | null
+export interface UpdateTaskStageSchema {
+  stage_id: number
   grade?: GradeTask | null
 }
 

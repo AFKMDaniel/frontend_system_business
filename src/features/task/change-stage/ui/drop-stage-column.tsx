@@ -1,47 +1,44 @@
-import type { ReactNode } from 'react'
+import { useMemo, type ReactNode } from 'react'
 import { useDroppable, useDragOperation } from '@dnd-kit/react'
 
-import { getAllowedStatuses, STATUS_LABEL_KEYS } from '@/entities/task'
+import { getAllowedStageIds } from '@/entities/task'
+import type { StageConfig, StageSchema } from '@/entities/task'
 import { userApi, usePrivileged } from '@/entities/user'
-import { useTranslation } from '@/shared/i18n'
 import { cn } from '@/shared/lib/utils'
 import { Badge } from '@/shared/ui/badge'
 
-import type { StatusTask } from '@/entities/task'
-
 import type { TaskDragData } from '../model/task-drag'
 
-type DropStatusColumnProps = {
-  status: StatusTask
+type DropStageColumnProps = {
+  stage: StageSchema
   count: number
   teamId: number
+  config: StageConfig
   children: ReactNode
 }
 
-export function DropStatusColumn({ status, count, teamId, children }: DropStatusColumnProps) {
-  const { t } = useTranslation()
+export function DropStageColumn({ stage, count, teamId, config, children }: DropStageColumnProps) {
   const isPrivileged = usePrivileged(teamId)
   const { data: currentUser } = userApi.useGetUserMeQuery()
   const currentUserId = currentUser?.id ?? null
 
-  const { ref, isDropTarget } = useDroppable({
-    id: status,
-    accept: (source) => {
-      const data = source.data as TaskDragData
-      return getAllowedStatuses(data, {
+  const isAllowed = useMemo(
+    () => (sourceData: TaskDragData) =>
+      getAllowedStageIds(sourceData.stageId, config, {
         isPrivileged,
-        isExecutor: data.executorUserId === currentUserId,
-      }).includes(status)
-    },
+        isExecutor: sourceData.executorUserId === currentUserId,
+        hasExecutor: sourceData.executorUserId != null,
+      }).includes(stage.id),
+    [config, isPrivileged, currentUserId, stage.id],
+  )
+
+  const { ref, isDropTarget } = useDroppable({
+    id: stage.id,
+    accept: (source) => isAllowed(source.data as TaskDragData),
   })
 
   const { source } = useDragOperation()
-  const acceptsSource =
-    source != null &&
-    getAllowedStatuses(source.data as TaskDragData, {
-      isPrivileged,
-      isExecutor: (source.data as TaskDragData).executorUserId === currentUserId,
-    }).includes(status)
+  const acceptsSource = source != null && isAllowed(source.data as TaskDragData)
   const isDisabled = source != null && !acceptsSource
 
   return (
@@ -54,7 +51,7 @@ export function DropStatusColumn({ status, count, teamId, children }: DropStatus
       )}
     >
       <header className="flex items-center justify-between gap-2">
-        <h2 className="text-sm font-medium">{t(STATUS_LABEL_KEYS[status])}</h2>
+        <h2 className="text-sm font-medium">{stage.name}</h2>
         <Badge variant="secondary">{count}</Badge>
       </header>
       <div className="flex flex-col gap-3">{children}</div>

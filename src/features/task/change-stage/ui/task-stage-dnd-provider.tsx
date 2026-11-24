@@ -5,33 +5,34 @@ import { toast } from 'sonner'
 
 import type { DragEndEvent } from '@dnd-kit/react'
 
-import { useAppDispatch } from '@/shared/lib/redux'
-import { getAllowedStatuses, TASK_STATUSES, taskApi } from '@/entities/task'
+import { getAllowedStageIds, taskApi } from '@/entities/task'
+import type { StageConfig } from '@/entities/task'
 import { userApi, usePrivileged } from '@/entities/user'
 import { type ApiError } from '@/shared/api'
 import { useTranslation } from '@/shared/i18n'
-
-import type { StatusTask } from '@/entities/task'
+import { useAppDispatch } from '@/shared/lib/redux'
 
 import type { TaskCloseRequest, TaskDragData } from '../model/task-drag'
 
-type TaskStatusDndProviderProps = {
+type TaskStageDndProviderProps = {
   teamId: number
+  config: StageConfig
   children: ReactNode
   onTaskCloseRequest: (request: TaskCloseRequest) => void
 }
 
-export function TaskStatusDndProvider({
+export function TaskStageDndProvider({
   teamId,
+  config,
   children,
   onTaskCloseRequest,
-}: TaskStatusDndProviderProps) {
+}: TaskStageDndProviderProps) {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const isPrivileged = usePrivileged(teamId)
   const { data: currentUser } = userApi.useGetUserMeQuery()
   const currentUserId = currentUser?.id ?? null
-  const [updateTaskStatus] = taskApi.useUpdateTaskStatusMutation()
+  const [updateTaskStage] = taskApi.useUpdateTaskStageMutation()
 
   const handleDragEnd = (event: DragEndEvent) => {
     if (event.canceled) return
@@ -40,32 +41,41 @@ export function TaskStatusDndProvider({
     if (!source || !target) return
 
     const data = source.data as TaskDragData
-    const targetStatus = TASK_STATUSES.includes(target.id as StatusTask)
-      ? (target.id as StatusTask)
-      : null
-    if (!targetStatus || targetStatus === data.status) return
+    const targetStage = config.stages.find((stage) => stage.id === Number(target.id))
+    if (!targetStage || targetStage.id === data.stageId) return
 
-    const allowed = getAllowedStatuses(data, {
+    const allowed = getAllowedStageIds(data.stageId, config, {
       isPrivileged,
       isExecutor: data.executorUserId === currentUserId,
+      hasExecutor: data.executorUserId != null,
     })
-    if (!allowed.includes(targetStatus)) return
+    if (!allowed.includes(targetStage.id)) return
 
-    if (targetStatus === 'closed') {
+    if (targetStage.type === 'END') {
       const patch = dispatch(
         taskApi.util.updateQueryData('getTasks', { teamId }, (draft) => {
           const task = draft.entities[data.taskId]
-          if (task) task.status = targetStatus
+          if (task) task.stage = targetStage
         }),
       )
-      onTaskCloseRequest({ teamId, taskId: data.taskId, undo: () => patch?.undo() })
+      onTaskCloseRequest({
+        teamId,
+        taskId: data.taskId,
+        stageId: targetStage.id,
+        undo: () => patch?.undo(),
+      })
       return
     }
 
-    updateTaskStatus({ teamId, taskId: data.taskId, body: { status: targetStatus } })
+    updateTaskStage({
+      teamId,
+      taskId: data.taskId,
+      body: { stage_id: targetStage.id },
+      stage: targetStage,
+    })
       .unwrap()
       .catch((error: ApiError) => {
-        toast.error(error.message || t('task.board.moveStatusError'))
+        toast.error(error.message || t('task.board.moveStageError'))
       })
   }
 

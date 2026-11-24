@@ -22,6 +22,7 @@ export const API_ENDPOINTS = {
     meeting: (teamId: number, meetingId: number) => `/teams/${teamId}/meeting/${meetingId}`,
     meetingParticipants: (teamId: number, meetingId: number) =>
       `/teams/${teamId}/meeting/${meetingId}/participants`,
+    stageConfig: (teamId: number) => `/teams/${teamId}/stage/config`,
     tasks: (teamId: number) => `/teams/${teamId}/tasks`,
     task: (teamId: number, taskId: number) => `/teams/${teamId}/tasks/${taskId}`,
     taskAvgGrade: (teamId: number) => `/teams/${teamId}/tasks/avg_grade`,
@@ -29,7 +30,7 @@ export const API_ENDPOINTS = {
     taskUpdate: (teamId: number, taskId: number) => `/teams/${teamId}/tasks/update-task/${taskId}`,
     taskUpdateExecutor: (teamId: number, taskId: number) =>
       `/teams/${teamId}/tasks/update-task/${taskId}/executor`,
-    taskUpdateStatus: (teamId: number, taskId: number) =>
+    taskUpdateStage: (teamId: number, taskId: number) =>
       `/teams/${teamId}/tasks/update-task/${taskId}/status`,
     taskDelete: (teamId: number, taskId: number) => `/teams/${teamId}/tasks/delete-task/${taskId}`,
   },

@@ -76,12 +76,6 @@
     "avgGradeError": "Не удалось загрузить среднюю оценку."
   },
   "task": {
-    "status": {
-      "open": "Открыта",
-      "work": "В работе",
-      "review": "На проверке",
-      "closed": "Закрыта"
-    },
     "grade": "Оценка",
     "gradeDialog": {
       "title": "Оценка задачи",
@@ -108,18 +102,18 @@
       "noExecutors": "Исполнители не найдены.",
       "me": "я",
       "apply": "Применить",
-      "moveStatusError": "Не удалось изменить статус задачи."
+      "moveStageError": "Не удалось изменить этап задачи."
     },
     "backToBoard": "К списку задач",
     "details": {
       "loadError": "Не удалось загрузить задачу.",
       "title": "Подробности",
-      "status": "Статус",
+      "stage": "Этап",
       "assignee": "Исполнитель",
       "deadline": "Срок",
       "closed": "Закрыта",
       "grade": "Оценка",
-      "changeStatusError": "Не удалось изменить статус задачи.",
+      "changeStageError": "Не удалось изменить этап задачи.",
       "changeAssigneeError": "Не удалось обновить исполнителя.",
       "changeDeadlineError": "Не удалось обновить срок."
     },

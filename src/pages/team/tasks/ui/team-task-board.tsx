@@ -6,8 +6,7 @@ import type { DateRange } from 'react-day-picker'
 
 import { selectAllMembers } from '@/entities/team'
 import { teamApi } from '@/entities/team'
-import { selectTasksByStatus } from '@/entities/task'
-import { taskApi } from '@/entities/task'
+import { selectTasksByStage, stageApi, taskApi } from '@/entities/task'
 import { userApi } from '@/entities/user'
 import { openDialog } from '@/shared/model/dialog'
 import { useAppDispatch } from '@/shared/lib/redux'
@@ -110,20 +109,26 @@ export function TeamTaskBoard() {
   })
 
   const {
-    data: tasksByStatus,
-    isLoading,
-    isError,
+    data: tasksByStage,
+    isLoading: isTasksLoading,
+    isError: isTasksError,
   } = taskApi.useGetTasksQuery(
     { teamId: Number(teamId), params },
     {
       skip,
       selectFromResult: ({ data, isLoading, isError }) => ({
-        data: data ? selectTasksByStatus(data) : null,
+        data: data ? selectTasksByStage(data) : null,
         isLoading,
         isError,
       }),
     },
   )
+
+  const {
+    data: stageConfig,
+    isLoading: isStageConfigLoading,
+    isError: isStageConfigError,
+  } = stageApi.useGetStageConfigQuery(Number(teamId), { skip })
 
   const { data: currentUser } = userApi.useGetUserMeQuery()
 
@@ -185,15 +190,16 @@ export function TeamTaskBoard() {
       </form>
 
       <TaskBoardBody
-        isLoading={isLoading}
-        isError={isError}
-        tasksByStatus={tasksByStatus}
+        isLoading={isTasksLoading || isStageConfigLoading}
+        isError={isTasksError || isStageConfigError}
+        config={stageConfig}
+        tasksByStage={tasksByStage}
         teamId={Number(teamId)}
-        onTaskCloseRequest={({ teamId: closedTeamId, taskId, undo }) =>
+        onTaskCloseRequest={({ teamId: closedTeamId, taskId, stageId, undo }) =>
           dispatch(
             openDialog({
               id: 'grade-task',
-              props: { teamId: closedTeamId, taskId },
+              props: { teamId: closedTeamId, taskId, stageId },
               onClose: undo,
             }),
           )

@@ -25,10 +25,10 @@ const gradeSchema = object({
 
 type GradeTaskFormValues = { grade: number }
 
-export function GradeTaskDialog({ teamId, taskId }: GradeTaskDialogProps) {
+export function GradeTaskDialog({ teamId, taskId, stageId }: GradeTaskDialogProps) {
   const dispatch = useAppDispatch()
   const { t } = useTranslation()
-  const [updateTaskStatus, { isLoading }] = taskApi.useUpdateTaskStatusMutation()
+  const [updateTaskStage, { isLoading }] = taskApi.useUpdateTaskStageMutation()
   const {
     control,
     handleSubmit,
@@ -40,10 +40,10 @@ export function GradeTaskDialog({ teamId, taskId }: GradeTaskDialogProps) {
   })
 
   const onSubmit = handleSubmit(async ({ grade }) => {
-    await updateTaskStatus({
+    await updateTaskStage({
       teamId,
       taskId,
-      body: { status: 'closed', grade: grade as GradeTask },
+      body: { stage_id: stageId, grade: grade as GradeTask },
     }).unwrap()
     dispatch(closeDialog())
   })

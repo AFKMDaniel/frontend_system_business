@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 import { CalendarDays } from 'lucide-react'
 import { generatePath, Link } from 'react-router-dom'
 
+import type { StageType } from '../model/stage'
 import { cn } from '@/shared/lib/utils'
 import { formatDate, useTranslation } from '@/shared/i18n'
 import { ROUTES } from '@/shared/config'
@@ -9,34 +10,26 @@ import { Badge } from '@/shared/ui/badge'
 import { Card, CardContent, CardHeader } from '@/shared/ui/card'
 import { Rating } from '@/shared/ui/rating'
 
-import { STATUS_LABEL_KEYS } from '../lib/status'
-
 import type { TaskSchema } from '../model/task'
-import type { StatusTask } from '../lib/status'
 
-type StatusMeta = {
+type StageMeta = {
   badgeVariant: 'default' | 'secondary' | 'outline'
   badgeClassName: string
   accentClassName: string
 }
 
-const STATUS_META: Record<StatusTask, StatusMeta> = {
-  open: {
+const STAGE_TYPE_META: Record<StageType, StageMeta> = {
+  OPEN: {
     badgeVariant: 'secondary',
     badgeClassName: '',
     accentClassName: 'border-l-muted-foreground/25',
   },
-  work: {
+  MIDDLE: {
     badgeVariant: 'default',
     badgeClassName: '',
     accentClassName: 'border-l-primary',
   },
-  review: {
-    badgeVariant: 'outline',
-    badgeClassName: 'bg-blue-500/15 text-blue-700 border-blue-500/30 dark:text-blue-400',
-    accentClassName: 'border-l-blue-500',
-  },
-  closed: {
+  END: {
     badgeVariant: 'outline',
     badgeClassName:
       'bg-emerald-500/15 text-emerald-700 border-emerald-500/30 dark:text-emerald-400',
@@ -50,7 +43,7 @@ type TaskCardProps = {
 }
 
 export function TaskCard({ task, executor }: TaskCardProps) {
-  const meta = STATUS_META[task.status]
+  const meta = STAGE_TYPE_META[task.stage.type]
   const { t } = useTranslation()
 
   return (
@@ -58,7 +51,7 @@ export function TaskCard({ task, executor }: TaskCardProps) {
       <CardHeader>
         <div className="flex flex-wrap items-center gap-1.5">
           <Badge variant={meta.badgeVariant} className={meta.badgeClassName || undefined}>
-            {t(STATUS_LABEL_KEYS[task.status])}
+            {task.stage.name}
           </Badge>
           {task.grade != null ? (
             <div className="flex items-center gap-1.5">

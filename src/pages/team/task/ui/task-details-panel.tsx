@@ -1,14 +1,13 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { CalendarDays, ChevronDown } from 'lucide-react'
 
 import { ExecutorInfo, selectAllMembers, teamApi } from '@/entities/team'
-import {
-  getAllowedStatuses,
-  STATUS_LABEL_KEYS,
-  taskApi,
-} from '@/entities/task'
+import { getAllowedStageIds, stageApi, taskApi } from '@/entities/task'
+import type { StageSchema } from '@/entities/task'
 import { userApi, usePrivileged } from '@/entities/user'
 import { formatDate, useTranslation } from '@/shared/i18n'
+import { useAppDispatch } from '@/shared/lib/redux'
+import { openDialog } from '@/shared/model/dialog'
 import { toast } from 'sonner'
 import { Avatar, AvatarFallback } from '@/shared/ui/avatar'
 import { Badge } from '@/shared/ui/badge'
@@ -23,7 +22,7 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from '@/shared/ui/popover'
 import { Rating } from '@/shared/ui/rating'
 
-import type { StatusTask, TaskSchema } from '@/entities/task'
+import type { TaskSchema } from '@/entities/task'
 
 type TaskDetailsPanelProps = {
   teamId: number
@@ -41,11 +40,13 @@ function DetailRow({ label, children }: { label: string; children: React.ReactNo
 
 export function TaskDetailsPanel({ teamId, task }: TaskDetailsPanelProps) {
   const { t } = useTranslation()
+  const dispatch = useAppDispatch()
   const isPrivileged = usePrivileged(teamId)
   const { data: currentUser } = userApi.useGetUserMeQuery()
   const isExecutor = task.executor_user_id === (currentUser?.id ?? null)
 
-  const [updateTaskStatus] = taskApi.useUpdateTaskStatusMutation()
+  const { data: stageConfig } = stageApi.useGetStageConfigQuery(teamId)
+  const [updateTaskStage] = taskApi.useUpdateTaskStageMutation()
   const [updateTaskExecutor] = taskApi.useUpdateTaskExecutorMutation()
   const [updateTask] = taskApi.useUpdateTaskMutation()
   const { data: membersData } = teamApi.useGetTeamMembersQuery(
@@ -61,19 +62,43 @@ export function TaskDetailsPanel({ teamId, task }: TaskDetailsPanelProps) {
   const [isDeadlineOpen, setIsDeadlineOpen] = useState(false)
   const deadlineDate = task.deadline ? new Date(task.deadline) : undefined
   const canEditDeadline = isPrivileged
-  // The backend only persists executor changes while the task is still open.
-  const canEditAssignee = isPrivileged && task.status === 'open'
+  // The backend only persists executor changes while the task is in the OPEN stage.
+  const canEditAssignee = isPrivileged && task.stage.type === 'OPEN'
 
-  const allowedStatuses = getAllowedStatuses(
-    { status: task.status, executorUserId: task.executor_user_id },
-    { isPrivileged, isExecutor },
-  )
+  const allowedStages = useMemo(() => {
+    if (!stageConfig) return []
 
-  const handleStatusChange = async (status: StatusTask) => {
+    const allowedStageIds = getAllowedStageIds(task.stage.id, stageConfig, {
+      isPrivileged,
+      isExecutor,
+      hasExecutor: task.executor_user_id != null,
+    })
+
+    return allowedStageIds
+      .map((stageId) => stageConfig.stages.find((stage) => stage.id === stageId))
+      .filter((stage): stage is StageSchema => stage != null)
+  }, [stageConfig, task.stage.id, task.executor_user_id, isPrivileged, isExecutor])
+
+  const handleStageChange = async (stage: StageSchema) => {
+    if (stage.type === 'END') {
+      dispatch(
+        openDialog({
+          id: 'grade-task',
+          props: { teamId, taskId: task.id, stageId: stage.id },
+        }),
+      )
+      return
+    }
+
     try {
-      await updateTaskStatus({ teamId, taskId: task.id, body: { status } }).unwrap()
+      await updateTaskStage({
+        teamId,
+        taskId: task.id,
+        body: { stage_id: stage.id },
+        stage,
+      }).unwrap()
     } catch {
-      toast.error(t('task.details.changeStatusError'))
+      toast.error(t('task.details.changeStageError'))
     }
   }
 
@@ -103,25 +128,25 @@ export function TaskDetailsPanel({ teamId, task }: TaskDetailsPanelProps) {
     <aside className="bg-card flex flex-col gap-3 rounded-lg border p-4">
       <h2 className="text-lg font-bold">{t('task.details.title')}</h2>
 
-      <DetailRow label={t('task.details.status')}>
-        {allowedStatuses.length > 0 ? (
+      <DetailRow label={t('task.details.stage')}>
+        {allowedStages.length > 0 ? (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="xs" className="gap-1">
-                <Badge variant="secondary">{t(STATUS_LABEL_KEYS[task.status])}</Badge>
+                <Badge variant="secondary">{task.stage.name}</Badge>
                 <ChevronDown className="text-muted-foreground size-3" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              {allowedStatuses.map((status) => (
-                <DropdownMenuItem key={status} onClick={() => void handleStatusChange(status)}>
-                  {t(STATUS_LABEL_KEYS[status])}
+              {allowedStages.map((stage) => (
+                <DropdownMenuItem key={stage.id} onClick={() => void handleStageChange(stage)}>
+                  {stage.name}
                 </DropdownMenuItem>
               ))}
             </DropdownMenuContent>
           </DropdownMenu>
         ) : (
-          <Badge variant="secondary">{t(STATUS_LABEL_KEYS[task.status])}</Badge>
+          <Badge variant="secondary">{task.stage.name}</Badge>
         )}
       </DetailRow>
 

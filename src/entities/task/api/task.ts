@@ -4,6 +4,7 @@ import { rootApi } from '@/shared/api'
 import { API_ENDPOINTS } from '@/shared/config'
 
 import { taskAdapter } from '../lib/task-adapter'
+import type { StageSchema } from '../model/stage'
 
 import type {
   OutAVGGradeTaskSchema,
@@ -12,7 +13,7 @@ import type {
   TaskSchema,
   UpdateTaskExecutorSchema,
   UpdateTaskSchema,
-  UpdateTaskStatusSchema,
+  UpdateTaskStageSchema,
 } from '../model/task'
 
 export const taskApi = rootApi.injectEndpoints({
@@ -76,23 +77,23 @@ export const taskApi = rootApi.injectEndpoints({
       }),
       invalidatesTags: ['Task'],
     }),
-    updateTaskStatus: builder.mutation<
+    updateTaskStage: builder.mutation<
       TaskSchema,
-      { teamId: number; taskId: number; body: UpdateTaskStatusSchema }
+      { teamId: number; taskId: number; body: UpdateTaskStageSchema; stage?: StageSchema }
     >({
       query: ({ teamId, taskId, body }) => ({
-        url: API_ENDPOINTS.teams.taskUpdateStatus(teamId, taskId),
+        url: API_ENDPOINTS.teams.taskUpdateStage(teamId, taskId),
         method: 'PATCH',
         body,
       }),
       invalidatesTags: ['Task'],
-      async onQueryStarted({ teamId, taskId, body }, { dispatch, queryFulfilled }) {
-        if (!body.status) return
+      async onQueryStarted({ teamId, taskId, stage }, { dispatch, queryFulfilled }) {
+        if (!stage) return
 
         const patch = dispatch(
           taskApi.util.updateQueryData('getTasks', { teamId }, (draft) => {
             const task = draft.entities[taskId]
-            if (task) task.status = body.status!
+            if (task) task.stage = stage
           }),
         )
 
