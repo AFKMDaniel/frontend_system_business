@@ -1,22 +1,19 @@
 import type { PropsWithChildren } from 'react'
-import { ThemeProvider } from 'next-themes'
 import { Provider } from 'react-redux'
 
 import { Toaster } from '@/shared/ui/sonner'
 
 import { AuthProvider } from './auth-provider'
-import { DialogHost } from './dialog/ui/dialog-host'
+import { DialogHost } from './dialog/dialog-host'
 import { store } from './store'
 
 export function Providers({ children }: PropsWithChildren) {
   return (
     <Provider store={store}>
-      <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-        <AuthProvider />
-        {children}
-        <DialogHost />
-        <Toaster />
-      </ThemeProvider>
+      <AuthProvider />
+      {children}
+      <DialogHost />
+      <Toaster />
     </Provider>
   )
 }

@@ -6,8 +6,8 @@ import { getAllowedStageIds, stageApi, taskApi } from '@/entities/task'
 import type { StageSchema } from '@/entities/task'
 import { userApi, usePrivileged } from '@/entities/user'
 import { formatDate, useTranslation } from '@/shared/i18n'
-import { useAppDispatch } from '@/shared/lib/redux'
-import { openDialog } from '@/shared/model/dialog'
+import { useAppDispatch } from '@/shared/lib/hooks'
+import { openDialog } from '@/shared/model'
 import { toast } from 'sonner'
 import { Avatar, AvatarFallback } from '@/shared/ui/avatar'
 import { Badge } from '@/shared/ui/badge'
@@ -104,7 +104,11 @@ export function TaskDetailsPanel({ teamId, task }: TaskDetailsPanelProps) {
 
   const handleAssigneeChange = async (userId: number | null) => {
     try {
-      await updateTaskExecutor({ teamId, taskId: task.id, body: { executor_user_id: userId } }).unwrap()
+      await updateTaskExecutor({
+        teamId,
+        taskId: task.id,
+        body: { executor_user_id: userId },
+      }).unwrap()
     } catch {
       toast.error(t('task.details.changeAssigneeError'))
     }
@@ -200,9 +204,7 @@ export function TaskDetailsPanel({ teamId, task }: TaskDetailsPanelProps) {
             </PopoverContent>
           </Popover>
         ) : deadlineDate ? (
-          <span className="text-xs">
-            {formatDate(deadlineDate, 'd MMM yyyy')}
-          </span>
+          <span className="text-xs">{formatDate(deadlineDate, 'd MMM yyyy')}</span>
         ) : (
           <span className="text-muted-foreground text-xs">—</span>
         )}
@@ -215,7 +217,11 @@ export function TaskDetailsPanel({ teamId, task }: TaskDetailsPanelProps) {
       )}
 
       <DetailRow label={t('task.details.grade')}>
-        {task.grade != null ? <Rating rate={task.grade} /> : <span className="text-muted-foreground text-xs">—</span>}
+        {task.grade != null ? (
+          <Rating rate={task.grade} />
+        ) : (
+          <span className="text-muted-foreground text-xs">—</span>
+        )}
       </DetailRow>
     </aside>
   )

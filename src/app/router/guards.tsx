@@ -3,8 +3,9 @@ import { Navigate, useLocation } from 'react-router-dom'
 
 import { Loader2 } from 'lucide-react'
 
-import { useAppSelector } from '@/shared/lib/redux'
-import { selectAccessToken, selectAuthReady, userApi } from '@/entities/user'
+import { useAppSelector } from '@/shared/lib/hooks'
+import { selectAccessToken, selectAuthReady } from '@/shared/auth'
+import { userApi } from '@/entities/user'
 import { ROUTES } from '@/shared/config'
 
 type GuardProps = {

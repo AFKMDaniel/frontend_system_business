@@ -124,14 +124,14 @@ function SingleDatePicker({
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <div
-          className={cn('flex flex-col gap-1.5', className)}
+          className={cn('flex w-full flex-col gap-1.5', className)}
           onClick={(event) => {
             event.preventDefault()
             setOpen(true)
           }}
         >
           {label ? <FieldLabel htmlFor={inputId}>{label}</FieldLabel> : null}
-          <InputGroup className="w-40">
+          <InputGroup>
             <DateMaskInput
               id={inputId}
               value={value}
@@ -227,15 +227,15 @@ function RangeDatePicker({
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <div
-          className={cn('flex flex-col gap-1.5', className)}
+          className={cn('flex w-full flex-col gap-1.5', className)}
           onClick={(event) => {
             event.preventDefault()
             setOpen(true)
           }}
         >
           {label ? <FieldLabel htmlFor={inputId}>{label}</FieldLabel> : null}
-          <div className="flex items-center gap-2">
-            <InputGroup className="w-40">
+          <div className="flex w-full items-center gap-2">
+            <InputGroup>
               <DateMaskInput
                 id={inputId}
                 value={value?.from}
@@ -277,7 +277,7 @@ function RangeDatePicker({
               </InputGroupAddon>
             </InputGroup>
 
-            <InputGroup className="w-40">
+            <InputGroup>
               <DateMaskInput
                 value={value?.to}
                 onCommit={handleToCommit}

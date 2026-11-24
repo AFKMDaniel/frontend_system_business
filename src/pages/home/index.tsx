@@ -1,7 +1,7 @@
 import { Loader2, Users } from 'lucide-react'
 
-import { useAppDispatch } from '@/shared/lib/redux'
-import { openDialog } from '@/shared/model/dialog'
+import { useAppDispatch } from '@/shared/lib/hooks'
+import { openDialog } from '@/shared/model'
 import { UserInfo, userApi } from '@/entities/user'
 import { useTranslation } from '@/shared/i18n'
 import { Button } from '@/shared/ui/button'

@@ -1,20 +1,13 @@
 import { useState } from 'react'
 
 import { useTranslation } from '@/shared/i18n'
-import { resolveLinkDialog } from '@/shared/lib/link-dialog'
-import { useAppDispatch } from '@/shared/lib/redux'
-import { closeDialog } from '@/shared/model/dialog'
+import { useAppDispatch } from '@/shared/lib/hooks'
+import { resolveLinkDialog, type LinkDialogResult } from '@/shared/lib/utils'
+import { closeDialog } from '@/shared/model'
 import { Button } from '@/shared/ui/button'
-import {
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/shared/ui/dialog'
+import { DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/shared/ui/dialog'
 import { Input } from '@/shared/ui/input'
 import { Label } from '@/shared/ui/label'
-
-import type { LinkDialogResult } from '@/shared/lib/link-dialog'
 
 export type RichTextLinkDialogProps = {
   requestId: string
@@ -22,11 +15,7 @@ export type RichTextLinkDialogProps = {
   hasExistingLink: boolean
 }
 
-export function RichTextLinkDialog({
-  requestId,
-  url,
-  hasExistingLink,
-}: RichTextLinkDialogProps) {
+export function RichTextLinkDialog({ requestId, url, hasExistingLink }: RichTextLinkDialogProps) {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const [value, setValue] = useState(url)

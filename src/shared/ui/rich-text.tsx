@@ -24,10 +24,9 @@ import remarkBreaks from 'remark-breaks'
 import remarkGfm from 'remark-gfm'
 
 import { useTranslation } from '@/shared/i18n'
-import { createLinkDialogRequest } from '@/shared/lib/link-dialog'
-import { useAppDispatch } from '@/shared/lib/redux'
-import { cn } from '@/shared/lib/utils'
-import { openDialog } from '@/shared/model/dialog'
+import { useAppDispatch } from '@/shared/lib/hooks'
+import { cn, createLinkDialogRequest } from '@/shared/lib/utils'
+import { openDialog } from '@/shared/model'
 import { Button } from '@/shared/ui/button'
 
 /**
@@ -190,9 +189,7 @@ export function RichTextEditor({
   } = useEditorState({
     editor,
     selector: ({ editor }) => ({
-      canUseLink: editor
-        ? !editor.state.selection.empty || editor.isActive('link')
-        : false,
+      canUseLink: editor ? !editor.state.selection.empty || editor.isActive('link') : false,
       isBold: editor?.isActive('bold') ?? false,
       isItalic: editor?.isActive('italic') ?? false,
       isUnderline: editor?.isActive('underline') ?? false,
@@ -261,7 +258,7 @@ export function RichTextEditor({
   return (
     <div
       className={cn(
-        'border-input bg-background overflow-hidden rounded-lg border focus-within:border-ring focus-within:ring-3 focus-within:ring-ring/50',
+        'border-input bg-background focus-within:border-ring focus-within:ring-ring/50 overflow-hidden rounded-lg border focus-within:ring-3',
         className,
       )}
     >

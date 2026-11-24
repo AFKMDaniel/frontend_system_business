@@ -1,9 +1,9 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { setupListeners } from '@reduxjs/toolkit/query/react'
 
-import { authReducer, refreshToken } from '@/entities/user'
 import { rootApi } from '@/shared/api'
-import { dialogReducer } from '@/shared/model/dialog'
+import { authReducer, refreshToken } from '@/shared/auth'
+import { dialogReducer } from '@/shared/model'
 
 export const store = configureStore({
   reducer: {

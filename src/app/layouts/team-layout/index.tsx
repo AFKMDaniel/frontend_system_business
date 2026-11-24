@@ -1,5 +1,5 @@
 import { Calendar, ListTodo, Users } from 'lucide-react'
-import { Outlet, generatePath, useParams } from 'react-router-dom'
+import { Outlet, generatePath, matchPath, useLocation, useParams } from 'react-router-dom'
 
 import { teamApi } from '@/entities/team'
 import { ROUTES } from '@/shared/config'
@@ -8,6 +8,7 @@ import { Layout } from '@/app/layouts/layout'
 
 export function TeamLayout() {
   const { teamId } = useParams<'teamId'>()
+  const { pathname } = useLocation()
   const { t } = useTranslation()
 
   const { data: team } = teamApi.useGetTeamQuery({ teamId: Number(teamId) }, { skip: !teamId })
@@ -16,9 +17,12 @@ export function TeamLayout() {
     return null
   }
 
+  const isTasksRoute = matchPath({ path: ROUTES.team, end: true }, pathname) != null
+
   return (
     <Layout
       title={team?.name ?? t('team.name')}
+      fullWidth={isTasksRoute}
       tabs={[
         {
           label: t('team.tasks'),

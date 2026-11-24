@@ -25,8 +25,5 @@ export const userApi = rootApi.injectEndpoints({
       }),
       invalidatesTags: ['Team', 'User'],
     }),
-    logout: builder.mutation<void, void>({
-      query: () => ({ url: API_ENDPOINTS.auth.logout, method: 'POST' }),
-    }),
   }),
 })

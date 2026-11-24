@@ -1,14 +1,13 @@
 import { yupResolver } from '@hookform/resolvers/yup'
 import { object, string } from 'yup'
 
-import { useAppDispatch } from '@/shared/lib/redux'
-import { closeDialog } from '@/shared/model/dialog'
+import { useAppDispatch, useFormWithErrorHandling } from '@/shared/lib/hooks'
+import { closeDialog } from '@/shared/model'
 import { userApi } from '@/entities/user'
-import { useFormWithErrorHandling } from '@/shared/lib/use-form-with-error-handling'
 import { i18n, useTranslation } from '@/shared/i18n'
 import { Button } from '@/shared/ui/button'
 import { DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/shared/ui/dialog'
-import { FormInput } from '@/shared/ui/form/form-input'
+import { FormInput } from '@/shared/ui/form'
 
 export type { JoinTeamDialogProps } from './model/join-team'
 

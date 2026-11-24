@@ -93,8 +93,6 @@
     "due": "Due",
     "board": {
       "loadError": "Failed to load tasks.",
-      "none": "No tasks",
-      "adjustFilters": "Try adjusting the filters.",
       "assignee": "Assignee",
       "dateRange": "Date range",
       "allExecutors": "All executors",
@@ -102,6 +100,7 @@
       "noExecutors": "No executors found.",
       "me": "me",
       "apply": "Apply",
+      "filters": "Filters",
       "moveStageError": "Failed to change task stage."
     },
     "backToBoard": "Back to board",
@@ -183,11 +182,5 @@
   },
   "languageSwitch": {
     "label": "Language"
-  },
-  "themeSwitch": {
-    "label": "Theme",
-    "light": "Light",
-    "dark": "Dark",
-    "system": "System"
   }
 }

@@ -1,16 +1,15 @@
 import { yupResolver } from '@hookform/resolvers/yup'
 import { number, object } from 'yup'
 
-import { closeDialog } from '@/shared/model/dialog'
-import { useAppDispatch } from '@/shared/lib/redux'
+import { closeDialog } from '@/shared/model'
+import { useAppDispatch, useFormWithErrorHandling } from '@/shared/lib/hooks'
 import { taskApi } from '@/entities/task'
 import type { GradeTask } from '@/entities/task'
 import { i18n, useTranslation } from '@/shared/i18n'
-import { useFormWithErrorHandling } from '@/shared/lib/use-form-with-error-handling'
 import { Button } from '@/shared/ui/button'
 import { DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/shared/ui/dialog'
 import { Field, FieldError, FieldLabel } from '@/shared/ui/field'
-import { FormRating } from '@/shared/ui/form/form-rating'
+import { FormRating } from '@/shared/ui/form'
 
 import type { GradeTaskDialogProps } from './model/grade-task'
 

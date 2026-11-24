@@ -17,6 +17,7 @@ Frontend for a business-management system (teams, tasks, meetings, calendar, com
 - `npm run build` — type-check (`tsc -b`) then production build
 - `npx tsc -b` — type-check only (this is the verify command)
 - `npm run lint` — run oxlint
+- `npm run lint:fsd` — check FSD layer boundaries with Steiger
 - `npm run preview` — preview production build
 
 ## State management
@@ -24,7 +25,7 @@ Frontend for a business-management system (teams, tasks, meetings, calendar, com
 - **Redux Toolkit + RTK Query** is the single data-fetching/state layer (no custom fetch client).
 - Reauth (401 → refresh → retry) is handled by the base query, which reads the `refreshToken` thunk from the thunk `extraArgument` passed to the store. The access token is kept only in Redux memory (no localStorage persistence) — a page reload logs the user out.
 - Extend the root API with `rootApi.injectEndpoints(...)`. Tag types (`User`, `Team`, `Task`, `Meeting`, `Comment`, `Calendar`) are declared once in `TAG_TYPES` — use those strings for `providesTags`/`invalidatesTags`.
-- Auth thunks are `login`, `register`, and `refreshToken`. `logout` is an RTK Query mutation (`userApi.useLogoutMutation`), and its fulfilled matcher clears the access token in the auth slice.
+- Auth infrastructure lives in `shared/auth`: thunks `login`, `register`, `refreshToken`, the `authReducer`, and selectors `selectAccessToken`/`selectAuthStatus`/`selectAuthReady`. `logout` is an RTK Query mutation (`useLogoutMutation` from `@/shared/auth`), and its fulfilled matcher clears the access token in the auth slice.
 - `RootState`/`AppDispatch` are declared as global types, and typed hooks (`useAppDispatch`/`useAppSelector`) are available.
 
 ## Dialogs

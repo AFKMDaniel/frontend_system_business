@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import type { CSSProperties } from 'react'
 import { format } from 'date-fns'
 import { useForm } from 'react-hook-form'
 import { useParams } from 'react-router-dom'
@@ -8,14 +9,21 @@ import { selectAllMembers } from '@/entities/team'
 import { teamApi } from '@/entities/team'
 import { selectTasksByStage, stageApi, taskApi } from '@/entities/task'
 import { userApi } from '@/entities/user'
-import { openDialog } from '@/shared/model/dialog'
-import { useAppDispatch } from '@/shared/lib/redux'
+import { openDialog } from '@/shared/model'
+import { useAppDispatch } from '@/shared/lib/hooks'
 import { useTranslation } from '@/shared/i18n'
 import { Avatar, AvatarFallback } from '@/shared/ui/avatar'
 import { Button } from '@/shared/ui/button'
 import { FilterGroup } from '@/shared/ui/filter-group'
-import { FormCombobox } from '@/shared/ui/form/form-combobox'
-import { FormDatePicker } from '@/shared/ui/form/form-date-picker'
+import { FormCombobox } from '@/shared/ui/form'
+import { FormDatePicker } from '@/shared/ui/form'
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarHeader,
+  SidebarProvider,
+  SidebarTrigger,
+} from '@/shared/ui/sidebar'
 import {
   ComboboxContent,
   ComboboxEmpty,
@@ -99,6 +107,8 @@ export function TeamTaskBoard() {
     return next
   }, [appliedFilters])
 
+  const [isFiltersOpen, setIsFiltersOpen] = useState(false)
+
   const onSubmit = handleSubmit((values) => {
     setAppliedFilters({
       executorId:
@@ -137,74 +147,102 @@ export function TeamTaskBoard() {
   }
 
   return (
-    <div className="flex flex-col gap-4">
-      <form onSubmit={onSubmit} className="flex flex-col gap-4">
-        <div className="flex flex-wrap items-start gap-4">
-          <FilterGroup label={t('task.board.assignee')}>
-            <FormCombobox
-              control={control}
-              name="executor"
-              items={executorOptions}
-              itemToStringLabel={(option) =>
-                executorOptions.find((item) => item.value === option.value)?.label ?? option.label
-              }
-            >
-              <ComboboxTrigger
-                type="button"
-                render={<Button variant="outline" className="w-56 justify-between font-normal" />}
+    <SidebarProvider
+      open={isFiltersOpen}
+      onOpenChange={setIsFiltersOpen}
+      className="relative flex min-h-0 flex-1 items-stretch"
+      style={{ '--sidebar-width': '24rem' } as CSSProperties}
+    >
+      <Sidebar collapsible="icon" className="absolute h-full">
+        <SidebarHeader className="flex-row items-center justify-between gap-2 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:p-1.5">
+          <span className="truncate text-sm font-medium group-data-[collapsible=icon]:hidden">
+            {t('task.board.filters')}
+          </span>
+          <SidebarTrigger />
+        </SidebarHeader>
+
+        <SidebarContent className="group-data-[collapsible=icon]:hidden">
+          <form
+            id="task-filters"
+            onSubmit={onSubmit}
+            className="flex min-h-full flex-col gap-4 p-2"
+          >
+            <FilterGroup label={t('task.board.assignee')}>
+              <FormCombobox
+                control={control}
+                name="executor"
+                items={executorOptions}
+                itemToStringLabel={(option) =>
+                  executorOptions.find((item) => item.value === option.value)?.label ?? option.label
+                }
               >
-                <ComboboxValue />
-              </ComboboxTrigger>
-              <ComboboxContent>
-                <ComboboxInput showTrigger={false} placeholder={t('task.board.searchExecutor')} />
-                <ComboboxEmpty>{t('task.board.noExecutors')}</ComboboxEmpty>
-                <ComboboxList>
-                  {(option) => (
-                    <ComboboxItem key={option.value} value={option}>
-                      {option.userId != null && (
-                        <Avatar size="sm">
-                          <AvatarFallback>{option.label.charAt(0).toUpperCase()}</AvatarFallback>
-                        </Avatar>
-                      )}
-                      <span className="truncate">
-                        {option.label}
-                        {option.userId != null && option.userId === currentUser?.id && (
-                          <span className="text-muted-foreground"> ({t('task.board.me')})</span>
+                <ComboboxTrigger
+                  type="button"
+                  render={
+                    <Button variant="outline" className="w-full justify-between font-normal" />
+                  }
+                >
+                  <ComboboxValue />
+                </ComboboxTrigger>
+                <ComboboxContent>
+                  <ComboboxInput showTrigger={false} placeholder={t('task.board.searchExecutor')} />
+                  <ComboboxEmpty>{t('task.board.noExecutors')}</ComboboxEmpty>
+                  <ComboboxList>
+                    {(option) => (
+                      <ComboboxItem key={option.value} value={option}>
+                        {option.userId != null && (
+                          <Avatar size="sm">
+                            <AvatarFallback>{option.label.charAt(0).toUpperCase()}</AvatarFallback>
+                          </Avatar>
                         )}
-                      </span>
-                    </ComboboxItem>
-                  )}
-                </ComboboxList>
-              </ComboboxContent>
-            </FormCombobox>
-          </FilterGroup>
+                        <span className="truncate">
+                          {option.label}
+                          {option.userId != null && option.userId === currentUser?.id && (
+                            <span className="text-muted-foreground"> ({t('task.board.me')})</span>
+                          )}
+                        </span>
+                      </ComboboxItem>
+                    )}
+                  </ComboboxList>
+                </ComboboxContent>
+              </FormCombobox>
+            </FilterGroup>
 
-          <FilterGroup label={t('task.board.dateRange')}>
-            <FormDatePicker control={control} name="dateRange" mode="range" />
-          </FilterGroup>
+            <FilterGroup label={t('task.board.dateRange')}>
+              <FormDatePicker control={control} name="dateRange" mode="range" />
+            </FilterGroup>
 
-          <Button type="submit" disabled={!isDirty} className="mt-5.5">
-            {t('task.board.apply')}
-          </Button>
+            <div className="mt-auto flex justify-end p-2">
+              <Button type="submit" disabled={!isDirty}>
+                {t('task.board.apply')}
+              </Button>
+            </div>
+          </form>
+        </SidebarContent>
+      </Sidebar>
+
+      <div className="flex min-h-0 min-w-0 flex-1 flex-col">
+        <div className="flex shrink-0 items-center gap-2 pb-4 md:hidden">
+          <SidebarTrigger />
         </div>
-      </form>
 
-      <TaskBoardBody
-        isLoading={isTasksLoading || isStageConfigLoading}
-        isError={isTasksError || isStageConfigError}
-        config={stageConfig}
-        tasksByStage={tasksByStage}
-        teamId={Number(teamId)}
-        onTaskCloseRequest={({ teamId: closedTeamId, taskId, stageId, undo }) =>
-          dispatch(
-            openDialog({
-              id: 'grade-task',
-              props: { teamId: closedTeamId, taskId, stageId },
-              onClose: undo,
-            }),
-          )
-        }
-      />
-    </div>
+        <TaskBoardBody
+          isLoading={isTasksLoading || isStageConfigLoading}
+          isError={isTasksError || isStageConfigError}
+          config={stageConfig}
+          tasksByStage={tasksByStage}
+          teamId={Number(teamId)}
+          onTaskCloseRequest={({ teamId: closedTeamId, taskId, stageId, undo }) =>
+            dispatch(
+              openDialog({
+                id: 'grade-task',
+                props: { teamId: closedTeamId, taskId, stageId },
+                onClose: undo,
+              }),
+            )
+          }
+        />
+      </div>
+    </SidebarProvider>
   )
 }

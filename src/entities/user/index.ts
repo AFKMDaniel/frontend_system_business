@@ -1,8 +1,5 @@
 export * from './model/user'
 export * from './api/user'
-export * from './model/auth-slice'
-export { default as authReducer } from './model/auth-slice'
-export * from './model/auth-thunks'
 export { UserInfo } from './ui/user-info'
 export { useIsAdmin } from './lib/use-is-admin'
 export { ALL_ROLES } from './lib/get-role-label'

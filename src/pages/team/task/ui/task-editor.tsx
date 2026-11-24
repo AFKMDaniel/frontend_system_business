@@ -6,12 +6,11 @@ import { object, string } from 'yup'
 import { taskApi } from '@/entities/task'
 import { usePrivileged } from '@/entities/user'
 import { i18n, useTranslation } from '@/shared/i18n'
-import { useFormWithErrorHandling } from '@/shared/lib/use-form-with-error-handling'
-import { isEmptyRichText } from '@/shared/lib/rich-text'
-import { cn } from '@/shared/lib/utils'
+import { useFormWithErrorHandling } from '@/shared/lib/hooks'
+import { cn, isEmptyRichText } from '@/shared/lib/utils'
 import { Button } from '@/shared/ui/button'
-import { FormInput } from '@/shared/ui/form/form-input'
-import { FormRichText } from '@/shared/ui/form/form-rich-text'
+import { FormInput } from '@/shared/ui/form'
+import { FormRichText } from '@/shared/ui/form'
 import { RichTextContent } from '@/shared/ui/rich-text'
 
 import type { TaskSchema } from '@/entities/task'
@@ -90,7 +89,7 @@ export function TaskEditor({ teamId, task }: TaskEditorProps) {
             label={t('task.edit.titleLabel')}
             labelClassName={HEADING_CLASS}
             placeholder={t('task.edit.titlePlaceholder')}
-            className={cn('text-2xl md:text-2xl font-bold', 'h-auto py-1')}
+            className={cn('text-2xl font-bold md:text-2xl', 'h-auto py-1')}
             autoFocus
           />
           <div className="flex flex-col gap-2">
@@ -105,13 +104,7 @@ export function TaskEditor({ teamId, task }: TaskEditorProps) {
             <Button type="submit" size="sm" disabled={!isDirty || isLoading}>
               {isLoading ? t('task.edit.saving') : t('task.edit.save')}
             </Button>
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              disabled={isLoading}
-              onClick={cancel}
-            >
+            <Button type="button" variant="ghost" size="sm" disabled={isLoading} onClick={cancel}>
               <X data-icon="inline-start" />
               {t('task.edit.cancel')}
             </Button>
